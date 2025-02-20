@@ -156,14 +156,22 @@ export const getInitialContactswithMessages = async (req, res, next) => {
         },
       },
     });
+    console.log("USER", user);
     const messages = [...user.sentMessages, ...user.recievedMessages];
-    messages.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    console.log("MESSAGE: ", messages);
+    messages.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()); //resulting in descending order. Newest message first
     const users = new Map();
     const messageStatusChange = [];
 
     messages.forEach((msg) => {
-      const isSender = msg.senderId === userId;
-      const calculatedId = isSender ? msg.recieverId : msg.senderId;
+      const isSender = msg.senderId === userId; // current user 1 is sender of message
+      const calculatedId = isSender ? msg.recieverId : msg.senderId; // If msg is of current user then calculate receiverId else senderId
+
+      // Skip adding the current user to the users map
+      if (calculatedId === userId) {
+        return;
+      }
+
       if (msg.messageStatus === "sent") {
         messageStatusChange.push(msg.id);
       }
@@ -209,6 +217,7 @@ export const getInitialContactswithMessages = async (req, res, next) => {
         });
       }
     });
+
     if (messageStatusChange.length) {
       await prisma.messages.updateMany({
         where: {
@@ -219,10 +228,17 @@ export const getInitialContactswithMessages = async (req, res, next) => {
         },
       });
     }
-    console.log("------------------ ", users);
+    // console.log("------------------ ", users);
+
+    //Inculded current user in online array
+    const onlineUsersArray = Array.from(onlineUsers.keys());
+    if (!onlineUsersArray.includes(userId)) {
+      onlineUsersArray.push(userId); // Ensure current user is part of onlineUsers
+    }
+
     return res.status(200).json({
       users: Array.from(users.values()),
-      onlineUsers: Array.from(onlineUsers.keys()),
+      onlineUsers: onlineUsersArray,
     });
   } catch (err) {
     next(err);
