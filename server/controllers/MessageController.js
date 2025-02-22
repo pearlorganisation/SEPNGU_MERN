@@ -156,9 +156,9 @@ export const getInitialContactswithMessages = async (req, res, next) => {
         },
       },
     });
-    console.log("USER", user);
+    // console.log("USER", user);
     const messages = [...user.sentMessages, ...user.recievedMessages];
-    console.log("MESSAGE: ", messages);
+    // console.log("MESSAGE: ", messages);
     messages.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()); //resulting in descending order. Newest message first
     const users = new Map();
     const messageStatusChange = [];

@@ -73,12 +73,12 @@ export const generateToken = (req, res, next) => {
     const effectiveTime = 3600;
     const payload = "";
 
-    console.log("ZEGO_APP_ID:", process.env.ZEGO_APP_ID);
-    console.log(
-      "ZEGO_SERVER_SECRET:",
-      process.env.ZEGO_SERVER_SECRET ? "Present" : "Missing"
-    );
-    console.log("Received userId:", userId);
+    // console.log("ZEGO_APP_ID:", process.env.ZEGO_APP_ID);
+    // console.log(
+    //   "ZEGO_SERVER_SECRET:",
+    //   process.env.ZEGO_SERVER_SECRET ? "Present" : "Missing"
+    // );
+    // console.log("Received userId:", userId);
 
     if (!appId || !serverSecret || !userId) {
       return res
@@ -87,7 +87,7 @@ export const generateToken = (req, res, next) => {
     }
 
     const token = generateToken04(
-      appIdInt,
+      appId,
       userId,
       serverSecret,
       effectiveTime,

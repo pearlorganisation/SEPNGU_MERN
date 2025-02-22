@@ -95,6 +95,11 @@ function Main() {
         });
       });
 
+      socket.current.on("user-busy", ({ to }) => {
+        // added
+        alert(`User ${to} is currently on another call.`);
+      });
+
       socket.current.on("incoming-video-call", ({ from, roomId, callType }) => {
         dispatch({
           type: reducerCases.SET_INCOMING_VIDEO_CALL,

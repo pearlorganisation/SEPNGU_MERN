@@ -32,6 +32,7 @@ const io = new Server(server, {
 });
 
 global.onlineUsers = new Map();
+const activeCalls = new Map();
 
 io.on("connection", (socket) => {
   global.chatSocket = socket;
@@ -80,7 +81,7 @@ io.on("connection", (socket) => {
     socket.to(sendUserSocket).emit("accept-call");
   });
 
-  // If suer 2 disconnect the call data.from is user 1, and user 1 will listen to voice call rejected socket
+  // If user 2 disconnect the call data.from is user 1, and user 1 will listen to voice call rejected socket
   socket.on("reject-voice-call", (data) => {
     const sendUserSocket = onlineUsers.get(data.from); // data.from is id of another person which did not reject the voice call
     if (sendUserSocket) {
