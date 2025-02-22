@@ -219,7 +219,7 @@ export const getInitialContactswithMessages = async (req, res, next) => {
         },
       });
     }
-    console.log("------------------ ", users);
+    // console.log("------------------ ", users);
     return res.status(200).json({
       users: Array.from(users.values()),
       onlineUsers: Array.from(onlineUsers.keys()),

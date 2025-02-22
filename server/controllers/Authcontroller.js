@@ -87,7 +87,7 @@ export const generateToken = (req, res, next) => {
     }
 
     const token = generateToken04(
-      appIdInt,
+      appId,
       userId,
       serverSecret,
       effectiveTime,

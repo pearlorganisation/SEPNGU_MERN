@@ -152,7 +152,9 @@ function Container({ data }) {
       zgVar.stopPublishingStream(publishStream);
       zgVar.logoutRoom(data.roomId.toString());
     }
-    if (data.callType === "") {
+    // console.log("data", data);
+    if (data.callType === "voice") {
+      console.log("audio call rejected 1");
       socket.current.emit("reject-voice-call", {
         from: id, // callee id
       });

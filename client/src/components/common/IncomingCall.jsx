@@ -19,6 +19,7 @@ function IncomingCall() {
   };
 
   const rejectCall = () => {
+    console.log("audio call rejected 2");
     socket.current.emit("reject-voice-call", { from: incomingVoiceCall.id });
     dispatch({ type: reducerCases.END_CALL });
   };

@@ -83,6 +83,7 @@ io.on("connection", (socket) => {
   // If suer 2 disconnect the call data.from is user 1, and user 1 will listen to voice call rejected socket
   socket.on("reject-voice-call", (data) => {
     const sendUserSocket = onlineUsers.get(data.from); // data.from is id of another person which did not reject the voice call
+    console.log("sendUserSocket: ", sendUserSocket);
     if (sendUserSocket) {
       socket.to(sendUserSocket).emit("voice-call-rejected"); // send voice call rejected to that user
     }
