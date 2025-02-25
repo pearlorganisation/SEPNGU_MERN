@@ -196,7 +196,7 @@ function Container({ data }) {
       <div className="h-16 w-16 bg-red-600 flex items-center justify-center rounded-full">
         <MdOutlineCallEnd
           className="text-3xl cursor-pointer"
-          onClick={endCall}
+          onClick={endCall} // end call when call is being made and both user is in call
         />
       </div>
     </div>

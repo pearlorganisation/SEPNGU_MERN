@@ -32,12 +32,17 @@ const io = new Server(server, {
 });
 
 global.onlineUsers = new Map();
+const activeCalls = new Map();
 
 io.on("connection", (socket) => {
+  // console.log(socket);
   global.chatSocket = socket;
+  const onlineUsers = global.onlineUsers; // Use this variable throughout
+
   socket.on("add-user", (userId) => {
     // when user get connected
     onlineUsers.set(userId, socket.id);
+    console.log("ONLINE USERS: ", onlineUsers);
     socket.broadcast.emit("online-users", {
       // send emit to all users [except] current user
       onlineUsers: Array.from(onlineUsers.keys()),
@@ -64,14 +69,34 @@ io.on("connection", (socket) => {
     }
   });
 
+  // socket.on("outgoing-voice-call", (data) => {
+  //   const sendUserSocket = onlineUsers.get(data.to);
+  //   if (sendUserSocket) {
+  //     socket.to(sendUserSocket).emit("incoming-voice-call", {
+  //       from: data.from,
+  //       roomId: data.roomId,
+  //       callType: data.callType,
+  //     });
+  //   }
+  // });
   socket.on("outgoing-voice-call", (data) => {
     const sendUserSocket = onlineUsers.get(data.to);
-    if (sendUserSocket) {
-      socket.to(sendUserSocket).emit("incoming-voice-call", {
-        from: data.from,
-        roomId: data.roomId,
-        callType: data.callType,
-      });
+    console.log("activeCalls: ", activeCalls);
+    if (activeCalls.has(data.to)) {
+      // If the recipient is already on a call, notify the caller
+      socket.emit("user-busy", { to: data.to });
+    } else {
+      // Mark both users as in a call
+      activeCalls.set(data.from, data.to);
+      activeCalls.set(data.to, data.from);
+
+      if (sendUserSocket) {
+        socket.to(sendUserSocket).emit("incoming-voice-call", {
+          from: data.from,
+          roomId: data.roomId,
+          callType: data.callType,
+        });
+      }
     }
   });
 
@@ -80,14 +105,31 @@ io.on("connection", (socket) => {
     socket.to(sendUserSocket).emit("accept-call");
   });
 
-  // If suer 2 disconnect the call data.from is user 1, and user 1 will listen to voice call rejected socket
+  // // If suer 2 disconnect the call data.from is user 1, and user 1 will listen to voice call rejected socket
+  // socket.on("reject-voice-call", (data) => {
+  //   const sendUserSocket = onlineUsers.get(data.from); // data.from is id of another person which did not reject the voice call
+  //   console.log("sendUserSocket: ", sendUserSocket);
+  //   if (sendUserSocket) {
+  //     socket.to(sendUserSocket).emit("voice-call-rejected"); // send voice call rejected to that user
+  //   }
+  // });
+
   socket.on("reject-voice-call", (data) => {
-    const sendUserSocket = onlineUsers.get(data.from); // data.from is id of another person which did not reject the voice call
+    const sendUserSocket = onlineUsers.get(data.from);
     console.log("sendUserSocket: ", sendUserSocket);
     if (sendUserSocket) {
-      socket.to(sendUserSocket).emit("voice-call-rejected"); // send voice call rejected to that user
+      socket.to(sendUserSocket).emit("voice-call-rejected");
     }
+    // Remove from active calls
+    activeCalls.delete(data.from);
+    activeCalls.delete(data.to);
   });
+
+  // // Handle call end event - Added
+  // socket.on("call-ended", (data) => {
+  //   activeCalls.delete(data.from);
+  //   activeCalls.delete(data.to);
+  // });
 
   // [ No video call needed ]
   // socket.on("outgoing-video-call", (data) => {
