@@ -1,10 +1,15 @@
 import dotenv, { config } from "dotenv";
 import express from "express";
+import crypto from "crypto"; // Use this for ES module
+import morgan from "morgan";
+
 dotenv.config();
 
 import cors from "cors";
 import AuthRoutes from "./routes/AuthRoutes.js";
 import MessageRoutes from "./routes/MessageRoutes.js";
+import planRouter from "./routes/planRoutes.js";
+import subcriptionRouter from "./routes/SubscriptionRoutes.js";
 import { Server, Socket } from "socket.io";
 // const express = require('express');
 
@@ -12,14 +17,50 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(cors());
-app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors({ origin: ["http://localhost:3000", "http://localhost:5173"] }));
 app.use(express.json());
+app.use(morgan("dev"));
 
 app.use("/uploads/recordings", express.static("uploads/recordings"));
 app.use("/uploads/images", express.static("uploads/images"));
 
+app.get("/", (req, res) => {
+  res.send("API Works");
+});
+
 app.use("/api/auth", AuthRoutes);
 app.use("/api/messages", MessageRoutes);
+app.use("/api/plans", planRouter);
+app.use("/api/v1/subscriptions", subcriptionRouter);
+
+// Route to handle the callback
+app.post("/api/verify-payment", (req, res) => {
+  const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature } =
+    req.body;
+
+  try {
+    // Generate signature for verification
+    const generated_signature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(`${razorpay_payment_id}|${razorpay_subscription_id}`)
+      .digest("hex");
+
+    // Verify the signature
+    if (generated_signature === razorpay_signature) {
+      console.log("Payment Verified Successfully!");
+
+      // Process successful payment (e.g., update DB)
+      res.status(200).json({ success: true, message: "Payment verified!" });
+    } else {
+      console.error("Invalid Signature");
+      res.status(400).json({ success: false, message: "Invalid signature" });
+    }
+  } catch (error) {
+    console.error("Error handling callback:", error.message);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
 
 const server = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
@@ -27,7 +68,7 @@ const server = app.listen(PORT, () => {
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "http://localhost:5173"],
   },
 });
 
