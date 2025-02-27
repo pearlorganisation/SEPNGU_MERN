@@ -8,7 +8,6 @@ export default function Document() {
         <Main />
         <NextScript />
         <div id="photo-picker-element"></div>
-        
       </body>
     </Html>
   );

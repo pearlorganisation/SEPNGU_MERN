@@ -371,6 +371,7 @@ import VoiceCall from "./Call/VoiceCall";
 import IncomingVideoCall from "./common/IncomingVideoCall";
 import IncomingCall from "./common/IncomingCall";
 
+import { toast } from "react-toastify";
 function Main() {
   const router = useRouter();
   const [
@@ -426,6 +427,7 @@ function Main() {
   });
 
   useEffect(() => {
+    // console.log("userInfo: ", userInfo); // current user info {email, id, name, profileImage, status}
     if (userInfo) {
       socket.current = io(HOST);
       socket.current.emit("add-user", userInfo.id);
@@ -469,6 +471,19 @@ function Main() {
           type: reducerCases.END_CALL,
         });
       });
+
+      socket.current.on("user-busy", ({ to }) => {
+        // added
+        // alert(`User ${to} is currently on another call.`);
+        toast.error(`User ${to} is currently on another call.`);
+        // Reject the incoming call immediately
+        dispatch({ type: reducerCases.END_CALL });
+      });
+
+      // // Handle call-ended event - added
+      // socket.current.on("call-ended", (data) => {
+      //   dispatch({ type: reducerCases.END_CALL });
+      // });
 
       socket.current.on("online-users", ({ onlineUsers }) => {
         dispatch({

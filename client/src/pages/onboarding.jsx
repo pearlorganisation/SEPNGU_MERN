@@ -44,7 +44,7 @@ function onboarding() {
               status: about,
             },
           });
-          router.push("/");
+          router.push(newUser ? "/landingpage" : "/");
         }
       } catch (err) {
         console.log(err);
