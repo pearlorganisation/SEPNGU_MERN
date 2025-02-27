@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -21,6 +15,7 @@ model User {
   about String @default("")
   sentMessages Messages[] @relation("sentMessages")
   recievedMessages Messages[] @relation("recievedMessages")
+  subscriptions   Subscription[]  @relation("UserToSubscription") // Add relation name
 }
 
 model Messages {
@@ -33,4 +28,27 @@ model Messages {
   message String
   messageStatus String @default("sent")
   createdAt DateTime @default(now())
+}
+
+model Subscription {
+  id              Int      @id @default(autoincrement())
+  userId          Int?     @unique
+  user            User?    @relation("UserToSubscription", fields: [userId], references: [id]) // Add relation name
+  subscriptionId  String   @unique // Razorpay Subscription ID
+  planId          String   // Plan under which subscription was created
+  status          SubscriptionStatus @default(CREATED)
+  email           String  // Store email if user isn't logged in yet
+  phone           String  // Store phone number if user isn't logged in yet
+  startDate       DateTime @default(now()) 
+  endDate         DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum SubscriptionStatus {
+  CREATED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  EXPIRED
 }
