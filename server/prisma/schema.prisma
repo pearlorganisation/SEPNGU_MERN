@@ -35,10 +35,10 @@ model Subscription {
   userId          Int?     @unique
   user            User?    @relation("UserToSubscription", fields: [userId], references: [id]) // Add relation name
   subscriptionId  String   @unique // Razorpay Subscription ID
-  planId          String   // Plan under which subscription was created
+  planId         Int      // Reference to the Plan model
+  plan           Plan     @relation("PlanToSubscription", fields: [planId], references: [id])
   status          SubscriptionStatus @default(CREATED)
   email           String  // Store email if user isn't logged in yet
-  phone           String  // Store phone number if user isn't logged in yet
   startDate       DateTime @default(now()) 
   endDate         DateTime
   createdAt       DateTime @default(now())
@@ -52,3 +52,18 @@ enum SubscriptionStatus {
   CANCELLED
   EXPIRED
 }
+
+model Plan {
+  id          Int      @id @default(autoincrement())
+  planId      String   @unique // Razorpay Plan ID
+  name        String   // Plan name
+  description String?  // Plan description
+  price       Float    // Price in INR/USD
+  currency    String   @default("INR") // Currency
+  duration    Int      // Duration in days
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+ subscriptions Subscription[] @relation("PlanToSubscription") // One plan can have many subscriptions
+}
+
