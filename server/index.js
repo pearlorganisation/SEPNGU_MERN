@@ -33,35 +33,6 @@ app.use("/api/auth", AuthRoutes);
 app.use("/api/messages", MessageRoutes);
 app.use("/api/plans", planRouter);
 app.use("/api/subscriptions", subcriptionRouter);
-
-// // Route to handle the callback
-// app.post("/api/verify-payment", (req, res) => {
-//   const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature } =
-//     req.body;
-
-//   try {
-//     // Generate signature for verification
-//     const generated_signature = crypto
-//       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-//       .update(`${razorpay_payment_id}|${razorpay_subscription_id}`)
-//       .digest("hex");
-
-//     // Verify the signature
-//     if (generated_signature === razorpay_signature) {
-//       console.log("Payment Verified Successfully!");
-
-//       // Process successful payment (e.g., update DB)
-//       res.status(200).json({ success: true, message: "Payment verified!" });
-//     } else {
-//       console.error("Invalid Signature");
-//       res.status(400).json({ success: false, message: "Invalid signature" });
-//     }
-//   } catch (error) {
-//     console.error("Error handling callback:", error.message);
-//     res.status(500).json({ success: false, message: "Internal Server Error" });
-//   }
-// });
-
 app.post("/api/verify-payment", async (req, res) => {
   const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature } =
     req.body;
