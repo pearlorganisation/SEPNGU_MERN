@@ -16,6 +16,7 @@ model User {
   sentMessages Messages[] @relation("sentMessages")
   recievedMessages Messages[] @relation("recievedMessages")
   subscriptions   Subscription[]  @relation("UserToSubscription") // Add relation name
+  notifications Notification[] @relation(name: "UserNotifications") // 👈 One-to-many relation (Fix for the error)
 }
 
 model Messages {
@@ -67,3 +68,14 @@ model Plan {
  subscriptions Subscription[] @relation("PlanToSubscription") // One plan can have many subscriptions
 }
 
+model Notification {
+  id        Int   @id @default(autoincrement()) // Unique Notification ID
+  userId    Int   // User receiving the notification
+  message   String   // Notification message
+  // type      String   // Type of notification (e.g., "plan_expired")
+  // isRead    Boolean  @default(false) // Whether the notification has been read
+  createdAt DateTime @default(now()) // Timestamp of notification creation
+
+  // Relations
+  user      User     @relation(name: "UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+}

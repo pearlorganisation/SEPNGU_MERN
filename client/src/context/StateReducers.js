@@ -59,6 +59,7 @@ export const reducer = (state, action) => {
         messages: action.messages,
       };
     case reducerCases.SET_SOCKET:
+      console.log("Action socket: ", action.socket);
       return {
         ...state,
         socket: action.socket,

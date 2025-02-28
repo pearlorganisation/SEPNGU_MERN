@@ -34,6 +34,7 @@ function Main() {
   const [redirectLogin, setrediRectLogin] = useState(false);
   const [socketEvent, setSocketEvent] = useState(false);
   const socket = useRef();
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     if (redirectLogin) router.push("/login");
@@ -71,7 +72,7 @@ function Main() {
   });
 
   useEffect(() => {
-    // console.log("userInfo: ", userInfo); // current user info {email, id, name, profileImage, status}
+    console.log("userInfo: ", userInfo); // current user info {email, id, name, profileImage, status}
     if (userInfo) {
       socket.current = io(HOST);
       socket.current.emit("add-user", userInfo.id);
@@ -128,8 +129,13 @@ function Main() {
       // socket.current.on("call-ended", (data) => {
       //   dispatch({ type: reducerCases.END_CALL });
       // });
+      socket.current.on("newNotification", (notification) => {
+        console.log("notification: ", notification);
+        setNotifications((prev) => [notification, ...prev]);
+      });
 
       socket.current.on("online-users", ({ onlineUsers }) => {
+        console.log(onlineUsers);
         dispatch({
           type: reducerCases.SET_ONLINE_USERS,
           onlineUsers,
