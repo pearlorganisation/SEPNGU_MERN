@@ -1,6 +1,5 @@
 import dotenv, { config } from "dotenv";
 import express from "express";
-import crypto from "crypto"; // Use this for ES module
 import morgan from "morgan";
 
 dotenv.config();
@@ -10,10 +9,9 @@ import AuthRoutes from "./routes/AuthRoutes.js";
 import MessageRoutes from "./routes/MessageRoutes.js";
 import planRouter from "./routes/planRoutes.js";
 import subcriptionRouter from "./routes/SubscriptionRoutes.js";
+import verifyPaymentRouter from "./routes/verifyPaymentRoutes.js";
 import { sendNotification } from "./jobs/subscriptionReminder.js";
 import { Server, Socket } from "socket.io";
-import getPrismaInstance from "./utils/PrismaClient.js";
-// const express = require('express');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -34,55 +32,7 @@ app.use("/api/auth", AuthRoutes);
 app.use("/api/messages", MessageRoutes);
 app.use("/api/plans", planRouter);
 app.use("/api/subscriptions", subcriptionRouter);
-app.post("/api/verify-payment", async (req, res) => {
-  const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature } =
-    req.body;
-
-  try {
-    if (
-      !razorpay_payment_id ||
-      !razorpay_subscription_id ||
-      !razorpay_signature
-    ) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Missing required fields" });
-    }
-
-    // Generate expected signature
-    const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(`${razorpay_payment_id}|${razorpay_subscription_id}`)
-      .digest("hex");
-
-    // Verify the signature
-    if (expectedSignature !== razorpay_signature) {
-      console.error("Invalid Signature");
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid signature" });
-    }
-
-    console.log("✅ Payment Verified Successfully!");
-
-    const prisma = getPrismaInstance();
-
-    // Update subscription status in DB
-    const updatedSubscription = await prisma.subscription.update({
-      where: { subscriptionId: razorpay_subscription_id },
-      data: { status: "ACTIVE" }, // Update status as per your enum
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Payment verified and subscription updated!",
-      data: updatedSubscription,
-    });
-  } catch (error) {
-    console.error("❌ Error verifying payment:", error.message);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
-});
+app.post("/api/verify-payment", verifyPaymentRouter);
 
 const server = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
