@@ -209,6 +209,7 @@ export const getInitialContactswithMessages = async (req, res, next) => {
         });
       }
     });
+
     if (messageStatusChange.length) {
       await prisma.messages.updateMany({
         where: {
@@ -219,10 +220,18 @@ export const getInitialContactswithMessages = async (req, res, next) => {
         },
       });
     }
+
     // console.log("------------------ ", users);
+    //Inculded current user in online array
+    const onlineUsersArray = Array.from(onlineUsers.keys());
+    console.log("online user in getInitialContacts: ", onlineUsersArray);
+    if (!onlineUsersArray.includes(userId)) {
+      onlineUsersArray.push(userId); // Ensure current user is part of onlineUsers
+    }
+
     return res.status(200).json({
       users: Array.from(users.values()),
-      onlineUsers: Array.from(onlineUsers.keys()),
+      onlineUsers: onlineUsersArray,
     });
   } catch (err) {
     next(err);
