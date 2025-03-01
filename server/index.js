@@ -98,7 +98,11 @@ global.onlineUsers = new Map();
 const activeCalls = new Map();
 
 io.on("connection", (socket) => {
-  console.log("hhjjjjh");
+  console.log(`User connected: ${socket.id}`);
+
+  // When a backend restart happens, request user ID again
+  socket.emit("request-userId");
+
   global.chatSocket = socket;
   const onlineUsers = global.onlineUsers; // Use this variable throughout
 
@@ -191,6 +195,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    // when client refresh or close the tab
     console.log(`User disconnected: ${socket.id}`);
 
     // Find the userId associated with this socket.id
