@@ -18,6 +18,10 @@ app.use(express.json());
 app.use("/uploads/recordings", express.static("uploads/recordings"));
 app.use("/uploads/images", express.static("uploads/images"));
 
+app.get("/", (req, res) => {
+  res.send("API works");
+});
+
 app.use("/api/auth", AuthRoutes);
 app.use("/api/messages", MessageRoutes);
 
