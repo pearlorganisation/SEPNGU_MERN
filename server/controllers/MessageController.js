@@ -224,6 +224,7 @@ export const getInitialContactswithMessages = async (req, res, next) => {
     // console.log("------------------ ", users);
     //Inculded current user in online array
     const onlineUsersArray = Array.from(onlineUsers.keys());
+    console.log("online user in getInitialContacts: ", onlineUsersArray);
     if (!onlineUsersArray.includes(userId)) {
       onlineUsersArray.push(userId); // Ensure current user is part of onlineUsers
     }

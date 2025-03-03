@@ -383,12 +383,14 @@ function Main() {
       voiceCall,
       incomingVoiceCall,
       incomingVideoCall,
+      userNotifications,
     },
     dispatch,
   ] = useStateProvider();
   const [redirectLogin, setRedirectLogin] = useState(false);
   const [socketEvent, setSocketEvent] = useState(false);
   const socket = useRef();
+  // const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     if (redirectLogin) router.push("/login");
@@ -427,10 +429,24 @@ function Main() {
   });
 
   useEffect(() => {
-    // console.log("userInfo: ", userInfo); // current user info {email, id, name, profileImage, status}
+    console.log("userInfo: ", userInfo); // current user info {email, id, name, profileImage, status}
+    // console.log("userNotifications:---- ", userNotifications);
+
     if (userInfo) {
       socket.current = io(HOST);
-      socket.current.emit("add-user", userInfo.id);
+      socket.current.on("connect", () => {
+        console.log("SOCKET CONNECTED: ", socket.current.id); // ✅ Now logs the correct socket ID
+        socket.current.emit("add-user", userInfo.id);
+      });
+
+      // Handle backend restart: If the server asks for userId again, send it-Added
+      socket.current.on("request-userId", () => {
+        console.log("Backend restarted, resending userId...");
+        if (userInfo.id) {
+          socket.current.emit("add-user", userInfo.id);
+        }
+      });
+
       dispatch({ type: reducerCases.SET_SOCKET, socket });
     }
   }, [userInfo]);
@@ -484,8 +500,19 @@ function Main() {
       // socket.current.on("call-ended", (data) => {
       //   dispatch({ type: reducerCases.END_CALL });
       // });
+      socket.current.on("newNotification", (notification) => {
+        console.log("notification:---- ", notification);
+        // setNotifications((prev) => [notification, ...prev]);
+        // dispatch({
+        //   type: reducerCases.SET_USER_NOTIFICATIONS,
+        //   notifications: [notification, ...userNotifications],
+        // });
+        // Show toast notification
+        toast.info(notification.message);
+      });
 
       socket.current.on("online-users", ({ onlineUsers }) => {
+        console.log(onlineUsers);
         dispatch({
           type: reducerCases.SET_ONLINE_USERS,
           onlineUsers,
