@@ -10,6 +10,6 @@ const router = express.Router();
 router.route("/:userId").get(getUserNotifications);
 
 // Mark a notification as read
-router.patch("/mark-read/:userId", markNotificationAsRead);
+router.patch("/mark-read/:id", markNotificationAsRead);
 
 export default router;

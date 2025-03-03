@@ -22,10 +22,10 @@ export const getUserNotifications = async (req, res) => {
 
 export const markNotificationAsRead = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { id } = req.params;
     const prisma = getPrismaInstance();
-    const updatedNotifications = await prisma.notification.updateMany({
-      where: { userId: parseInt(userId) },
+    const updatedNotifications = await prisma.notification.update({
+      where: { id },
       data: { isRead: true },
     });
 
