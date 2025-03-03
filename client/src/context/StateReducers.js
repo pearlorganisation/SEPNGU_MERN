@@ -27,6 +27,7 @@ export const initialState = {
   voiceCall: undefined,
   incomingVoiceCall: undefined,
   incomingVideoCall: undefined,
+  // userNotifications: [], //Added
 };
 
 export const reducer = (state, action) => {
@@ -59,7 +60,6 @@ export const reducer = (state, action) => {
         messages: action.messages,
       };
     case reducerCases.SET_SOCKET:
-      console.log("Action socket: ", action.socket);
       return {
         ...state,
         socket: action.socket,
@@ -127,6 +127,11 @@ export const reducer = (state, action) => {
         ...state,
         currentChatUser: undefined,
       };
+    // case reducerCases.SET_USER_NOTIFICATIONS: //Added
+    //   return {
+    //     ...state,
+    //     userNotifications: action.userNotifications,
+    //   };
     default:
       return state;
   }

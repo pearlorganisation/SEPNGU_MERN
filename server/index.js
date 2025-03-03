@@ -10,6 +10,7 @@ import MessageRoutes from "./routes/MessageRoutes.js";
 import planRouter from "./routes/planRoutes.js";
 import subcriptionRouter from "./routes/SubscriptionRoutes.js";
 import verifyPaymentRouter from "./routes/verifyPaymentRoutes.js";
+import notificationRouter from "./routes/notificationRoutes.js";
 import { sendNotification } from "./jobs/subscriptionReminder.js";
 import { Server, Socket } from "socket.io";
 
@@ -32,7 +33,8 @@ app.use("/api/auth", AuthRoutes);
 app.use("/api/messages", MessageRoutes);
 app.use("/api/plans", planRouter);
 app.use("/api/subscriptions", subcriptionRouter);
-app.post("/api/verify-payment", verifyPaymentRouter);
+app.use("/api/verify-payment", verifyPaymentRouter);
+app.use("/api/notifications", notificationRouter);
 
 const server = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

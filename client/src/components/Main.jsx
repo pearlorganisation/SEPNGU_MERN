@@ -28,13 +28,14 @@ function Main() {
       voiceCall,
       incomingVoiceCall,
       incomingVideoCall,
+      userNotifications,
     },
     dispatch,
   ] = useStateProvider();
   const [redirectLogin, setrediRectLogin] = useState(false);
   const [socketEvent, setSocketEvent] = useState(false);
   const socket = useRef();
-  const [notifications, setNotifications] = useState([]);
+  // const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     if (redirectLogin) router.push("/login");
@@ -73,6 +74,8 @@ function Main() {
 
   useEffect(() => {
     console.log("userInfo: ", userInfo); // current user info {email, id, name, profileImage, status}
+    // console.log("userNotifications:---- ", userNotifications);
+
     if (userInfo) {
       socket.current = io(HOST);
       socket.current.on("connect", () => {
@@ -144,6 +147,10 @@ function Main() {
       socket.current.on("newNotification", (notification) => {
         console.log("notification:---- ", notification);
         // setNotifications((prev) => [notification, ...prev]);
+        // dispatch({
+        //   type: reducerCases.SET_USER_NOTIFICATIONS,
+        //   notifications: [notification, ...userNotifications],
+        // });
         // Show toast notification
         toast.info(notification.message);
       });

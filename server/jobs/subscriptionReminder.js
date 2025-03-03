@@ -6,22 +6,27 @@ const prisma = getPrismaInstance();
 
 // Function to send notifications
 export const sendNotification = async (userId, message) => {
-  const notification = await prisma.notification.create({
-    data: { userId, message },
-  });
-  console.log("Notification created: ", notification);
-  console.log("Global onlineUsers:", global.onlineUsers);
-  console.log("User ID:", userId);
+  // console.log("Notification created: ", notification);
+  // console.log("Global onlineUsers:", global.onlineUsers);
+  // console.log("User ID:", userId);
   const userSocketId = global.onlineUsers.get(userId);
   console.log("User Socket ID to send notification: ", userSocketId);
   if (userSocketId) {
+    const notification = await prisma.notification.create({
+      data: { userId, message, isRead: true },
+    });
     console.log("emitting newNotification event to user: ", userId);
     io.to(userSocketId).emit("newNotification", notification);
+  } else {
+    console.log("User is offline. Saving notification to DB.");
+    await prisma.notification.create({
+      data: { userId, message, isRead: false },
+    });
   }
 };
 
-// Cron job runs every hour (At minute 0)
-cron.schedule("0 * * * *", async () => {
+// Cron job runs every hour (At minute 0) ->0 * * * *
+cron.schedule("* * * * *", async () => {
   console.log("🔔 Running cron job: Checking expired subscriptions...");
 
   const expiredSubscriptions = await prisma.subscription.findMany({

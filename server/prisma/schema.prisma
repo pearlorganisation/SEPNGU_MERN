@@ -73,9 +73,8 @@ model Notification {
   userId    Int   // User receiving the notification
   message   String   // Notification message
   // type      String   // Type of notification (e.g., "plan_expired")
-  // isRead    Boolean  @default(false) // Whether the notification has been read
+  isRead    Boolean  @default(false) // Whether the notification has been read
   createdAt DateTime @default(now()) // Timestamp of notification creation
-
   // Relations
   user      User     @relation(name: "UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
 }
