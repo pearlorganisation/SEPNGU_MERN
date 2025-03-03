@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaFacebook,
   FaGlobe,
@@ -10,6 +10,8 @@ import {
 import phone from "../../public/avatars/pendrive.jpg";
 import Image from "next/image";
 import axios from "axios";
+import { GET_ALL_PLANS } from "@/utils/ApiRoutes";
+import { useStateProvider } from "@/context/StateContext";
 
 function landingpage() {
   const products = [
@@ -190,13 +192,37 @@ function landingpage() {
     },
   ];
 
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const [{ userInfo, newUser }, dispatch] = useStateProvider();
+
+  console.log(userInfo, "userInfo");
+
+  useEffect(() => {
+    const getPlans = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(GET_ALL_PLANS);
+        console.log("Response for Fetching plans", response?.data?.data);
+        setPlans(response?.data?.data);
+
+        setLoading(false);
+      } catch (error) {
+        console.log("Error fetching plans", error);
+      }
+    };
+
+    getPlans();
+  }, []);
+
   const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
   console.log("key---- ", razorpayKey);
   const handleSubscription = async (planId) => {
     try {
       // Step 1: Create Subscription via API
       const response = await axios.post(
-        "http://localhost:3005/api/v1/subscriptions",
+        "http://localhost:3005/api/subscriptions",
         {
           planId,
         }
@@ -274,8 +300,8 @@ function landingpage() {
         </div>
         <div className="mx-auto mt-0 max-w-2xl lg:mx-0 lg:max-w-none">
           <dl className="mt-1 grid grid-cols-1 gap-8 sm:mt-5 sm:grid-cols-2 lg:grid-cols-4">
-            {stats.map((stat) => (
-              <div key={stat.name} className="flex flex-col-reverse gap-1">
+            {stats.map((stat, index) => (
+              <div key={index} className="flex flex-col-reverse gap-1">
                 <dt className="text-md font-bold text-gray-300">{stat.name}</dt>
                 <dd className="text-4xl font-semibold tracking-tight text-white">
                   {stat.value}
@@ -285,19 +311,30 @@ function landingpage() {
           </dl>
         </div>
 
-        <div className="max-w-sm mx-auto p-6 bg-white rounded-2xl shadow-lg border border-gray-200 text-center">
-          <h2 className="text-xl font-semibold text-gray-800">
-            Subscription Plan
-          </h2>
-          <p className="text-3xl font-bold text-blue-600 mt-2">Rs.199</p>
-          <p className="text-gray-600 mt-1">for 3 months</p>
-          <button
-            onClick={() => handleSubscription("plan_Pzu6iL7xV3DG57")}
-            className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-          >
-            Join Now
-          </button>
-        </div>
+        {Array.isArray(plans) &&
+          plans.length > 0 &&
+          plans.map((plan) => (
+            <div
+              key={plan._id}
+              className="max-w-sm mx-auto p-6 bg-white rounded-2xl shadow-lg border border-gray-200 text-center"
+            >
+              <h2 className="text-xl font-semibold text-gray-800">
+                Subscription Plan
+              </h2>
+              <p className="text-3xl font-bold text-blue-600 mt-2">
+                {plan?.currency} {plan?.price}
+              </p>
+              <p className="text-gray-600 mt-1">
+                for {Math.ceil(plan?.duration / 30)} months{" "}
+              </p>
+              <button
+                onClick={() => handleSubscription(plan._id)}
+                className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              >
+                Join Now
+              </button>
+            </div>
+          ))}
         {/* <div className="flex justify-center mt-3">
           <button className="text-2xl rounded-md border border-transparent bg-indigo-600 px-7 py-2 font-medium text-white hover:bg-indigo-700 animate-popup">
             Join Now

@@ -70,7 +70,7 @@ function showpdf() {
     },
   ];
 
-  ];
+  
 
   return (
     <div className="bg-gray-900 w-full min-h-screen text-white">
