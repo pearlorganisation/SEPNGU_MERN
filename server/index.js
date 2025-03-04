@@ -18,7 +18,15 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(cors());
-app.use(cors({ origin: ["http://localhost:3000", "http://localhost:5173"] }));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "https://sepngu-mern.vercel.app",
+    ],
+  })
+);
 app.use(express.json());
 app.use(morgan("dev"));
 
@@ -42,7 +50,11 @@ const server = app.listen(PORT, () => {
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "http://localhost:5173"],
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "https://sepngu-mern.vercel.app",
+    ],
   },
 });
 
@@ -90,16 +102,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  // socket.on("outgoing-voice-call", (data) => {
-  //   const sendUserSocket = onlineUsers.get(data.to);
-  //   if (sendUserSocket) {
-  //     socket.to(sendUserSocket).emit("incoming-voice-call", {
-  //       from: data.from,
-  //       roomId: data.roomId,
-  //       callType: data.callType,
-  //     });
-  //   }
-  // });
   socket.on("outgoing-voice-call", (data) => {
     const sendUserSocket = global.onlineUsers.get(data.to);
     console.log("activeCalls: ", activeCalls);
