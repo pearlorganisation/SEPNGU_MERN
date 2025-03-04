@@ -1,4 +1,4 @@
-export const HOST = "http://localhost:3005";
+const HOST = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3005";
 
 const AUTH_ROUTE = `${HOST}/api/auth`;
 const MESSAGES_ROUTE = `${HOST}/api/messages`;
