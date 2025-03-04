@@ -59,7 +59,9 @@ model Plan {
   planId      String   @unique // Razorpay Plan ID
   name        String   // Plan name
   description String?  // Plan description
-  price       Float    // Price in INR/USD
+  basePrice   Float   // Base price before tax
+  gst         Float   // GST amount (18% of base price)
+  finalPrice  Float   // Price after adding GST
   currency    String   @default("INR") // Currency
   duration    Int      // Duration in days
   createdAt   DateTime @default(now())

@@ -1,9 +1,11 @@
+import { useStateProvider } from "@/context/StateContext";
 import { useRouter } from "next/router";
 import React from "react";
 import { FaStar, FaStarHalf } from "react-icons/fa";
 
 function showpdf() {
   const router = useRouter();
+  const [{ userInfo }, dispatch] = useStateProvider();
   const products = [
     {
       id: 1,
