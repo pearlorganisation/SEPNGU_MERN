@@ -1,9 +1,6 @@
 import { useRouter } from "next/router";
 import React from "react";
 import { FaStar, FaStarHalf } from "react-icons/fa";
-import { useRouter } from "next/router";
-import React from "react";
-import { FaStar, FaStarHalf } from "react-icons/fa";
 
 function showpdf() {
   const router = useRouter();
@@ -70,28 +67,19 @@ function showpdf() {
     },
   ];
 
-  
-
   return (
     <div className="bg-gray-900 w-full min-h-screen text-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-1 lg:max-w-6xl lg:px-1">
-        <h2 className="text-center text-2xl font-semibold text-white">
-          <span className="relative inline-block pb-1">
-            Our Courses
-            <span className="absolute left-0 bottom-0 w-full h-1 bg-orange-500"></span>
-          </span>
-        </h2>
-        <br></br>
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-1 lg:max-w-6xl lg:px-1">
-        <h2 className="text-center text-2xl font-semibold text-white">
-          <span className="relative inline-block pb-1">
-            Our Courses
-            <span className="absolute left-0 bottom-0 w-full h-1 bg-orange-500"></span>
-          </span>
-        </h2>
-        <br />
+        <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-1 lg:max-w-6xl lg:px-1">
+          <h2 className="text-center text-2xl font-semibold text-white">
+            <span className="relative inline-block pb-1">
+              Our Courses
+              <span className="absolute left-0 bottom-0 w-full h-1 bg-orange-500"></span>
+            </span>
+          </h2>
+          <br />
 
-        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+          {/* <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           {products.map((product) => (
             <a key={product.id} href={product.href} className="group">
               <img
@@ -127,52 +115,49 @@ function showpdf() {
               </button>
             </a>
           ))}
-        </div>
-      </div>
-    </div>
-  );
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {products.map((product) => (
-            <a
-              key={product.id}
-              href={product.href}
-              rel="noreferrer"
-              target="_blank"
-              className="group flex flex-col h-full bg-gray-800 p-4 rounded-lg shadow-lg"
-            >
-              <img
-                alt={product.imageAlt}
-                src={product.imageSrc}
-                className="w-full h-48 object-cover rounded-lg"
-              />
-              <div className="flex-grow">
-                <div className="flex justify-center gap-2 mt-2">
-                  <FaStar className="text-yellow-400" />
-                  <FaStar className="text-yellow-400" />
-                  <FaStar className="text-yellow-400" />
-                  <FaStar className="text-yellow-400" />
-                  <FaStarHalf className="text-yellow-400" />
-                  <span className="text-white-900 text-sm">(4.5)</span>
+        </div> */}
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {products.map((product) => (
+              <a
+                key={product.id}
+                href={product.href}
+                rel="noreferrer"
+                target="_blank"
+                className="group flex flex-col h-full bg-gray-800 p-4 rounded-lg shadow-lg"
+              >
+                <img
+                  alt={product.imageAlt}
+                  src={product.imageSrc}
+                  className="w-full h-48 object-cover rounded-lg"
+                />
+                <div className="flex-grow">
+                  <div className="flex justify-center gap-2 mt-2">
+                    <FaStar className="text-yellow-400" />
+                    <FaStar className="text-yellow-400" />
+                    <FaStar className="text-yellow-400" />
+                    <FaStar className="text-yellow-400" />
+                    <FaStarHalf className="text-yellow-400" />
+                    <span className="text-white-900 text-sm">(4.5)</span>
+                  </div>
+                  <h3 className="mt-2 text-md font-semibold">{product.name}</h3>
+                  <p className="mt-1 text-md font-bold text-white">
+                    {product.price}
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-green-300">
+                    {product.imageAlt}
+                  </p>
                 </div>
-                <h3 className="mt-2 text-md font-semibold">{product.name}</h3>
-                <p className="mt-1 text-md font-bold text-white">
-                  {product.price}
-                </p>
-                <p className="mt-1 text-sm font-semibold text-green-300">
-                  {product.imageAlt}
-                </p>
-              </div>
-              <button className="mt-2 w-full rounded-md bg-indigo-600 px-4 py-2 text-center font-medium text-white hover:bg-indigo-700">
-                Buy Now
-              </button>
-            </a>
-          ))}
+                <button className="mt-2 w-full rounded-md bg-indigo-600 px-4 py-2 text-center font-medium text-white hover:bg-indigo-700">
+                  Buy Now
+                </button>
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
-export default showpdf;
 
 export default showpdf;

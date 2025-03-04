@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   FaFacebook,
   FaGlobe,
@@ -12,192 +12,210 @@ import Image from "next/image";
 import axios from "axios";
 import { GET_ALL_PLANS } from "@/utils/ApiRoutes";
 import { useStateProvider } from "@/context/StateContext";
+import { reducer } from "@/context/StateReducers";
+import { useRouter } from "next/router";
+
+const products = [
+  {
+    id: 1,
+    name: "Online Chatting",
+    href: "",
+    price: "",
+    imageSrc: "/avatars/chat.jpg",
+    imageAlt: "",
+  },
+  {
+    id: 2,
+    name: "Online One on One Calling",
+    href: "",
+    price: "",
+    imageSrc: "/avatars/calling.avif",
+    imageAlt: "",
+  },
+  {
+    id: 3,
+    name: "English Speaking & Novel Books PDF",
+    href: "",
+    price: "",
+    imageSrc: "/avatars/novel.jpg",
+    imageAlt: "",
+  },
+  {
+    id: 4,
+    name: "English News for up to date",
+    href: "",
+    price: "",
+    imageSrc: "/avatars/news.jpg",
+    imageAlt: "",
+  },
+  {
+    id: 5,
+    name: "Overall English Learning Games",
+    href: "",
+    price: "",
+    imageSrc: "/avatars/games.jpg",
+    imageAlt: "",
+  },
+  {
+    id: 6,
+    name: "English Learning Short Videos",
+    href: "",
+    price: "",
+    imageSrc: "/avatars/videos1.jpg",
+    imageAlt: "",
+  },
+  {
+    id: 6,
+    name: "Interview Practice Excersie Notes",
+    href: "",
+    price: "",
+    imageSrc: "/avatars/interview.jpg",
+    imageAlt: "",
+  },
+  {
+    id: 7,
+    name: "English Learning For Kids",
+    href: "",
+    price: "",
+    imageSrc: "/avatars/kids1.jpg",
+    imageAlt: "",
+  },
+];
+const links = [
+  { name: "Our Website", href: "#" },
+  { name: "YouTube", href: "#" },
+  { name: "Instagram", href: "#" },
+  { name: "Facebook", href: "#" },
+];
+const stats = [
+  { name: "Active Member", value: "1000+" },
+  { name: "Rating", value: "4.2" },
+  { name: "Happy Students", value: "800+" },
+  { name: "Call and Chat Only in 199/-", value: "Unlimited" },
+  { name: "Free Call", value: "10+ min" },
+];
+const posts = [
+  {
+    id: 1,
+    title: "बहुत अच्छा है",
+    href: "#",
+    description:
+      "अब मैं यहां से बहुत सारी रोज नई चीजें सीखता हूं, साथ ही ऐसे लोगों से भी सीखता हूं जो मेरी बहुत मदद करते हैं, धन्यवाद सर",
+    date: "Jan 16, 2025",
+    datetime: "",
+    category: { title: "Learner", href: "#" },
+    author: {
+      name: "Deepak Singh",
+      role: "Chef",
+      href: "#",
+      imageUrl: "/avatars/1.png",
+    },
+  },
+  {
+    id: 2,
+    title: "Great platform",
+    href: "#",
+    description:
+      "I am currently working as a site enginier i have to meet new client on daily basis and speak to english i use this app for english learning it is great experience Thank you",
+    date: "Jan 19, 2025",
+    datetime: "",
+    category: { title: "Working proffesional", href: "#" },
+    author: {
+      name: "Arjun saini",
+      role: "Job persone",
+      href: "#",
+      imageUrl: "/avatars/2.png",
+    },
+  },
+  {
+    id: 3,
+    title: "English sikhne ke liye sbse best app h",
+    href: "#",
+    description:
+      "Sir me avi graduation ke apne last year me hu interview ki prepiration kar rha hu muje english bolte time bhut jijak jesa feel hota tha lekin logo se call pr bat krke mujme bhut improvment ho rhi h.",
+    date: "Jan 22, 2025",
+    datetime: "",
+    category: { title: "Learner", href: "#" },
+    author: {
+      name: "Kamlesh Kushwaha",
+      role: "Graduation Student",
+      href: "#",
+      imageUrl: "/avatars/3.png",
+    },
+  },
+  {
+    id: 4,
+    title: "Helpfull",
+    href: "#",
+    description:
+      "Muje bhut help hui isse logo se english me bat krne ke liye bhut achchi h sir aap isme jldi se koi naye feture bhi add kr dena taki or achche se sikhu me",
+    date: "Feb 3, 2025",
+    datetime: "",
+    category: { title: "Learner", href: "#" },
+    author: {
+      name: "Anjali Singh",
+      role: "Nurse",
+      href: "#",
+      imageUrl: "/avatars/4.png",
+    },
+  },
+  {
+    id: 5,
+    title: "Wah bhut axa laga sir",
+    href: "#",
+    description:
+      "Me roj naye- naye logo se english me bat krta hu avi me khud se chat me english me senteces type kr leta hu bhut help hui meri isse sir mere dost bhi le rhe h ab membership plan",
+    date: "Feb 6, 2025",
+    datetime: "",
+    category: { title: "Learner", href: "#" },
+    author: {
+      name: "Laxman Kumar",
+      role: "12th Student",
+      href: "#",
+      imageUrl: "/avatars/5.png",
+    },
+  },
+  {
+    id: 6,
+    title: "Nice for English Learning",
+    href: "#",
+    description:
+      "I am a housewife i really like this app i learn lots of things from here now i can confidently talk in front of my household thank you so much for this platform.",
+    date: "MFeb 8, 2020",
+    datetime: "",
+    category: { title: "Learner", href: "#" },
+    author: {
+      name: "Seema Devi",
+      role: "House-wife",
+      href: "#",
+      imageUrl: "/avatars/6.png",
+    },
+  },
+];
 
 function landingpage() {
-  const products = [
-    {
-      id: 1,
-      name: "Online Chatting",
-      href: "",
-      price: "",
-      imageSrc: "/avatars/chat.jpg",
-      imageAlt: "",
-    },
-    {
-      id: 2,
-      name: "Online One on One Calling",
-      href: "",
-      price: "",
-      imageSrc: "/avatars/calling.avif",
-      imageAlt: "",
-    },
-    {
-      id: 3,
-      name: "English Speaking & Novel Books PDF",
-      href: "",
-      price: "",
-      imageSrc: "/avatars/novel.jpg",
-      imageAlt: "",
-    },
-    {
-      id: 4,
-      name: "English News for up to date",
-      href: "",
-      price: "",
-      imageSrc: "/avatars/news.jpg",
-      imageAlt: "",
-    },
-    {
-      id: 5,
-      name: "Overall English Learning Games",
-      href: "",
-      price: "",
-      imageSrc: "/avatars/games.jpg",
-      imageAlt: "",
-    },
-    {
-      id: 6,
-      name: "English Learning Short Videos",
-      href: "",
-      price: "",
-      imageSrc: "/avatars/videos1.jpg",
-      imageAlt: "",
-    },
-    {
-      id: 6,
-      name: "Interview Practice Excersie Notes",
-      href: "",
-      price: "",
-      imageSrc: "/avatars/interview.jpg",
-      imageAlt: "",
-    },
-    {
-      id: 7,
-      name: "English Learning For Kids",
-      href: "",
-      price: "",
-      imageSrc: "/avatars/kids1.jpg",
-      imageAlt: "",
-    },
-  ];
-  const links = [
-    { name: "Our Website", href: "#" },
-    { name: "YouTube", href: "#" },
-    { name: "Instagram", href: "#" },
-    { name: "Facebook", href: "#" },
-  ];
-  const stats = [
-    { name: "Active Member", value: "1000+" },
-    { name: "Rating", value: "4.2" },
-    { name: "Happy Students", value: "800+" },
-    { name: "Call and Chat Only in 199/-", value: "Unlimited" },
-    { name: "Free Call", value: "10+ min" },
-  ];
-  const posts = [
-    {
-      id: 1,
-      title: "बहुत अच्छा है",
-      href: "#",
-      description:
-        "अब मैं यहां से बहुत सारी रोज नई चीजें सीखता हूं, साथ ही ऐसे लोगों से भी सीखता हूं जो मेरी बहुत मदद करते हैं, धन्यवाद सर",
-      date: "Jan 16, 2025",
-      datetime: "",
-      category: { title: "Learner", href: "#" },
-      author: {
-        name: "Deepak Singh",
-        role: "Chef",
-        href: "#",
-        imageUrl: "/avatars/1.png",
-      },
-    },
-    {
-      id: 2,
-      title: "Great platform",
-      href: "#",
-      description:
-        "I am currently working as a site enginier i have to meet new client on daily basis and speak to english i use this app for english learning it is great experience Thank you",
-      date: "Jan 19, 2025",
-      datetime: "",
-      category: { title: "Working proffesional", href: "#" },
-      author: {
-        name: "Arjun saini",
-        role: "Job persone",
-        href: "#",
-        imageUrl: "/avatars/2.png",
-      },
-    },
-    {
-      id: 3,
-      title: "English sikhne ke liye sbse best app h",
-      href: "#",
-      description:
-        "Sir me avi graduation ke apne last year me hu interview ki prepiration kar rha hu muje english bolte time bhut jijak jesa feel hota tha lekin logo se call pr bat krke mujme bhut improvment ho rhi h.",
-      date: "Jan 22, 2025",
-      datetime: "",
-      category: { title: "Learner", href: "#" },
-      author: {
-        name: "Kamlesh Kushwaha",
-        role: "Graduation Student",
-        href: "#",
-        imageUrl: "/avatars/3.png",
-      },
-    },
-    {
-      id: 4,
-      title: "Helpfull",
-      href: "#",
-      description:
-        "Muje bhut help hui isse logo se english me bat krne ke liye bhut achchi h sir aap isme jldi se koi naye feture bhi add kr dena taki or achche se sikhu me",
-      date: "Feb 3, 2025",
-      datetime: "",
-      category: { title: "Learner", href: "#" },
-      author: {
-        name: "Anjali Singh",
-        role: "Nurse",
-        href: "#",
-        imageUrl: "/avatars/4.png",
-      },
-    },
-    {
-      id: 5,
-      title: "Wah bhut axa laga sir",
-      href: "#",
-      description:
-        "Me roj naye- naye logo se english me bat krta hu avi me khud se chat me english me senteces type kr leta hu bhut help hui meri isse sir mere dost bhi le rhe h ab membership plan",
-      date: "Feb 6, 2025",
-      datetime: "",
-      category: { title: "Learner", href: "#" },
-      author: {
-        name: "Laxman Kumar",
-        role: "12th Student",
-        href: "#",
-        imageUrl: "/avatars/5.png",
-      },
-    },
-    {
-      id: 6,
-      title: "Nice for English Learning",
-      href: "#",
-      description:
-        "I am a housewife i really like this app i learn lots of things from here now i can confidently talk in front of my household thank you so much for this platform.",
-      date: "MFeb 8, 2020",
-      datetime: "",
-      category: { title: "Learner", href: "#" },
-      author: {
-        name: "Seema Devi",
-        role: "House-wife",
-        href: "#",
-        imageUrl: "/avatars/6.png",
-      },
-    },
-  ];
+  const [{ userInfo }, dispatch] = useStateProvider();
+
+  const [userData, setUserData] = useState(null);
+  const router = useRouter();
+
+  console.log(userInfo, "userInfo on landing page");
+
+  useEffect(() => {
+    const checkData = localStorage.getItem("userInfo");
+
+    if (!checkData) {
+      router.push("/login");
+    } else {
+      const data = JSON.parse(checkData);
+      console.log(data);
+      setUserData(data);
+      console.log(data);
+    }
+  }, []);
 
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const [{ userInfo, newUser }, dispatch] = useStateProvider();
-
-  console.log(userInfo, "userInfo");
 
   useEffect(() => {
     const getPlans = async () => {
@@ -217,25 +235,31 @@ function landingpage() {
   }, []);
 
   const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
-  console.log("key---- ", razorpayKey);
-  const handleSubscription = async (planId) => {
+  // console.log("key---- ", razorpayKey);
+  const handleSubscription = async ({ planId }) => {
+    console.log(userData);
+
     try {
       // Step 1: Create Subscription via API
       const response = await axios.post(
         "http://localhost:3005/api/subscriptions",
         {
           planId,
+          email: userData?.email,
+          userId: userData?.userId,
         }
       );
       console.log("REsponse", response); //{config, data, headers, request, status, statusText}
       console.log("REsponse data : ", response.data); // Extract data, response.data = { data, message, success }
-      const { id: subscription_id } = response.data.data; //
+      const { subscriptionId } = response?.data?.data; //
+
+      console.log(subscriptionId, "subs ID");
 
       // Step 2: Razorpay Landing Options for Subscription
       const options = {
         key: razorpayKey,
-        subscription_id: subscription_id,
-        name: "1X",
+        subscription_id: subscriptionId,
+        name: "SPENGU",
         description: "Subscription Landing",
         handler: async (response) => {
           console.log("Razorpay Response:", response);
@@ -251,9 +275,10 @@ function landingpage() {
           }
         },
         prefill: {
-          name: "John Doe",
-          email: "johndoe@example.com",
-          contact: "9999999999",
+          name: "Shubham Mamgain",
+          email: "shubhammamgain@pearlorganisation.com",
+
+          // contact: "9999999999",
         },
         theme: {
           color: "#3399cc",
@@ -261,7 +286,7 @@ function landingpage() {
       };
 
       // Step 3: Open Razorpay Landing
-      const rzp = new window.Razorpay(options);
+      const rzp = new Razorpay(options);
       rzp.open();
 
       rzp.on("payment.failed", function (response) {
@@ -328,7 +353,11 @@ function landingpage() {
                 for {Math.ceil(plan?.duration / 30)} months{" "}
               </p>
               <button
-                onClick={() => handleSubscription(plan._id)}
+                onClick={() =>
+                  handleSubscription({
+                    planId: plan.planId,
+                  })
+                }
                 className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
               >
                 Join Now

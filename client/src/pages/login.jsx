@@ -15,6 +15,8 @@ function login() {
 
   const [{ userInfo, newUser }, dispatch] = useStateProvider();
 
+  console.log(userInfo, "user info login");
+
   useEffect(() => {
     if (userInfo?.id && !newUser) router.push("/");
   }, [userInfo, newUser]);

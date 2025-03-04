@@ -36,8 +36,8 @@ model Subscription {
   userId          Int?     @unique
   user            User?    @relation("UserToSubscription", fields: [userId], references: [id]) // Add relation name
   subscriptionId  String   @unique // Razorpay Subscription ID
-  planId         Int      // Reference to the Plan model
-  plan           Plan     @relation("PlanToSubscription", fields: [planId], references: [id])
+  planId         String      // Reference to the Plan model
+  plan           Plan     @relation("PlanToSubscription", fields: [planId], references: [planId])
   status          SubscriptionStatus @default(CREATED)
   email           String  // Store email if user isn't logged in yet
   startDate       DateTime @default(now()) 
