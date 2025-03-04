@@ -26,7 +26,7 @@ export const sendNotification = async (userId, message) => {
 };
 
 // Cron job runs every hour (At minute 0) ->0 * * * *
-cron.schedule("0 * * * *", async () => {
+cron.schedule("* * * * *", async () => {
   console.log("🔔 Running cron job: Checking expired subscriptions...");
 
   const expiredSubscriptions = await prisma.subscription.findMany({
