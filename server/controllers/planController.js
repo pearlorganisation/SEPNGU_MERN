@@ -5,49 +5,56 @@ export const createPlan = async (req, res) => {
   try {
     const {
       name,
-      amount,
+      basePrice,
       currency,
       period = "monthly",
       interval = 3,
     } = req.body;
 
     // Validate required fields
-    if (!name || !amount || !currency) {
+    if (!name || !basePrice || !currency) {
       return res
         .status(400)
         .json({ success: false, message: "Missing required fields" });
     }
 
+    // Calculate GST (18%)
+    const gstAmount = parseFloat((basePrice * 0.18).toFixed(2)); // GST amount
+    const finalAmount = parseFloat((basePrice + gstAmount).toFixed(2)); // Final price including GST
+
     // Create a new plan in Razorpay
     const razorpayResponse = await razorpayInstance.plans.create({
-      period, // Default: "monthly"
-      interval, // Default: 3 months
+      period,
+      interval,
       item: {
-        name: name,
-        amount: amount * 100, // Convert to paise
-        currency: currency.toUpperCase(), // Ensure proper currency format
-        description: `${interval}-month subscription plan`,
+        name,
+        amount: Math.round(finalAmount * 100), // Convert to paise
+        currency: currency.toUpperCase(),
+        description: `${interval}-month subscription plan (Base: ₹${basePrice}, GST: ₹${gstAmount})`,
       },
     });
-    console.log("razorpay response: ", razorpayResponse);
+
+    console.log("Razorpay response:", razorpayResponse);
     const prisma = getPrismaInstance();
 
     // Store the plan in the database using Prisma
     const newPlan = await prisma.plan.create({
       data: {
-        planId: razorpayResponse.id, // Store Razorpay Plan ID
+        planId: razorpayResponse.id,
         name,
         description: razorpayResponse.item.description,
-        price: amount,
+        basePrice, // Store base price
+        gst: gstAmount, // Store GST separately
+        finalPrice: finalAmount, // Store final price
         currency: currency.toUpperCase(),
-        duration: interval * 30, // Convert months to days
+        duration: interval * 30,
       },
     });
 
     res.status(201).json({
       success: true,
       message: "Plan created successfully",
-      data: newPlan, // Return DB entry
+      data: newPlan,
     });
   } catch (error) {
     console.error("Razorpay Plan Creation Error:", error);

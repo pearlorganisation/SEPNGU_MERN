@@ -1,9 +1,11 @@
+import { useStateProvider } from "@/context/StateContext";
 import { useRouter } from "next/router";
 import React from "react";
 import { FaStar, FaStarHalf } from "react-icons/fa";
 
 function showpdf() {
   const router = useRouter();
+  const [{ userInfo }, dispatch] = useStateProvider();
   const products = [
     {
       id: 1,
@@ -52,6 +54,7 @@ function showpdf() {
             <span className="absolute left-0 bottom-0 w-full h-1 bg-orange-500"></span>
           </span>
         </h2>
+        <h1 className="text-white">{userInfo?.name}sfsdfsdfs</h1>
         <br></br>
 
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
