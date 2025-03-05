@@ -16,6 +16,7 @@ import VideoCall from "./Call/VideoCall";
 import VoiceCall from "./Call/VoiceCall";
 import IncomingVideoCall from "./common/IncomingVideoCall";
 import IncomingCall from "./common/IncomingCall";
+
 import { toast } from "react-toastify";
 function Main() {
   const router = useRouter();
@@ -32,7 +33,7 @@ function Main() {
     },
     dispatch,
   ] = useStateProvider();
-  const [redirectLogin, setrediRectLogin] = useState(false);
+  const [redirectLogin, setRedirectLogin] = useState(false);
   const [socketEvent, setSocketEvent] = useState(false);
   const socket = useRef();
   // const [notifications, setNotifications] = useState([]);
@@ -40,8 +41,9 @@ function Main() {
   useEffect(() => {
     if (redirectLogin) router.push("/login");
   }, [redirectLogin]);
+
   onAuthStateChanged(firebaseAuth, async (currentUser) => {
-    if (!currentUser) setrediRectLogin(true);
+    if (!currentUser) setRedirectLogin(true);
     if (!userInfo && currentUser?.email) {
       const { data } = await axios.post(CHECK_USER_ROUTE, {
         email: currentUser.email,
@@ -77,6 +79,7 @@ function Main() {
     // console.log("userNotifications:---- ", userNotifications);
 
     if (userInfo) {
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
       socket.current = io(HOST);
       socket.current.on("connect", () => {
         console.log("SOCKET CONNECTED: ", socket.current.id); // ✅ Now logs the correct socket ID
@@ -181,6 +184,40 @@ function Main() {
     }
   }, [currentChatUser]);
 
+  // return (
+  //   <>
+  //     {incomingVideoCall && <IncomingVideoCall />}
+  //     {incomingVoiceCall && <IncomingCall />}
+  //     {videoCall && (
+  //       <div className="h-screen w-screen max-h-full overflow-hidden">
+  //         <VideoCall />
+  //       </div>
+  //     )}
+  //     {voiceCall && (
+  //       <div className="h-screen w-screen max-h-full overflow-hidden">
+  //         <VoiceCall />
+  //       </div>
+  //     )}
+  //     {!videoCall && !voiceCall && (
+  //       <div className="grid sm:grid-cols-[30%_70%] lg:grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden ">
+  //         <ChatList className="hidden sm:block" />
+  //         {currentChatUser ? (
+  //           <div
+  //             className={`flex flex-col w-full h-full ${
+  //               messagesSearch ? "sm:grid sm:grid-cols-[25%_75%]" : ""
+  //             }`}
+  //           >
+  //             <Chat />
+  //             {messagesSearch && <SearchMessage />}
+  //           </div>
+  //         ) : (
+  //           <Empty className="flex items-center justify-center w-full" />
+  //         )}
+  //       </div>
+  //     )}
+  //   </>
+  // );
+
   return (
     <>
       {incomingVideoCall && <IncomingVideoCall />}
@@ -196,18 +233,19 @@ function Main() {
         </div>
       )}
       {!videoCall && !voiceCall && (
-        <div className="grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden ">
-          <ChatList />
-
+        <div className="grid sm:grid-cols-[50%_50%] lg:grid-cols-main h-screen w-screen max-h-screen max-w-full">
+          <ChatList className="hidden sm:block sm:order-2" />
           {currentChatUser ? (
             <div
-              className={messagesSearch ? "grid grid-cols-2" : "grid-cols-2"}
+              className={`flex flex-col w-full h-full ${
+                messagesSearch ? "sm:grid sm:grid-cols-[35%_65%]" : ""
+              }`}
             >
               <Chat />
               {messagesSearch && <SearchMessage />}
             </div>
           ) : (
-            <Empty />
+            <Empty className="flex items-center justify-center w-full" />
           )}
         </div>
       )}
