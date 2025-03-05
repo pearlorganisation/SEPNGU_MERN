@@ -15,6 +15,8 @@ function onboarding() {
   const [{ userInfo, newUser }, dispatch] = useStateProvider();
   const [name, setName] = useState(userInfo?.name || "");
   const [about, setAbout] = useState("");
+
+  const [mobileNumber, setMobileNumber] = useState("");
   const [image, setImage] = useState(defaultAvtar);
   console.log("user ingo", userInfo);
   useEffect(() => {
@@ -31,6 +33,7 @@ function onboarding() {
           name,
           about,
           image,
+          mobileNumber,
         });
         if (data.status) {
           dispatch({ type: reducerCases.SET_NEW_USER, newUser: false });
@@ -40,6 +43,7 @@ function onboarding() {
               id: data.user.id,
               name,
               email,
+              mobileNumber,
               profileImage: image,
               status: about,
             },
@@ -53,23 +57,30 @@ function onboarding() {
   };
 
   const validateDetails = () => {
-    if (name.length < 3) {
+    if (name.length < 3 && mobileNumber.length < 10) {
       return false;
     }
     return true;
   };
   return (
-    <div className="bg-panel-header-background h-screen w-screen text-white flex flex-col items-center justify-center">
+    <div className="bg-panel-header-background h-full w-screen text-white flex flex-col items-center justify-center">
       {" "}
       <div className="flex items-center justify-center gap-2">
         <Image src={spengu} alt="spengu" width={200} height={200} />
         <span className="text-7xl">Spengu</span>
       </div>
       <h2 className="text-2xl">Create your profile</h2>
-      <div className="flex gap-6 mt-6">
+      <div className="flex gap-6 mt-6 mb-4">
         <div className="flex flex-col items-center justify-center mt-5 gap-6">
           <Input name="Display name" state={name} setState={setName} label />
           <Input name="About" state={about} setState={setAbout} label />
+
+          <Input
+            name="Mobile Number"
+            state={mobileNumber}
+            setState={setMobileNumber}
+            label
+          />
           <div className="flex items-center justify-center">
             <button
               className="flex items-center justify-center gap-7 bg-search-input-container-background p-3  rounded-lg"

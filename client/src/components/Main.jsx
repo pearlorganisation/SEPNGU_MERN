@@ -238,7 +238,7 @@ function Main() {
           {currentChatUser ? (
             <div
               className={`flex flex-col w-full h-full ${
-                messagesSearch ? "sm:grid sm:grid-cols-[25%_75%]" : ""
+                messagesSearch ? "sm:grid sm:grid-cols-[35%_65%]" : ""
               }`}
             >
               <Chat />

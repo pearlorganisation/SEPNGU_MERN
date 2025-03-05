@@ -14,6 +14,7 @@ import { GET_ALL_PLANS } from "@/utils/ApiRoutes";
 import { useStateProvider } from "@/context/StateContext";
 import { reducer } from "@/context/StateReducers";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 const products = [
   {
@@ -246,14 +247,11 @@ function landingpage() {
         {
           planId,
           email: userData?.email,
-          userId: userData?.userId,
+          userId: userData?.id,
         }
       );
-      console.log("REsponse", response); //{config, data, headers, request, status, statusText}
-      console.log("REsponse data : ", response.data); // Extract data, response.data = { data, message, success }
-      const { subscriptionId } = response?.data?.data; //
 
-      console.log(subscriptionId, "subs ID");
+      const { subscriptionId } = response?.data?.data; //
 
       // Step 2: Razorpay Landing Options for Subscription
       const options = {
@@ -269,14 +267,20 @@ function landingpage() {
               razorpay_subscription_id: response.razorpay_subscription_id,
               razorpay_signature: response.razorpay_signature,
             });
-            alert("Subscription successful!");
+            toast.success("Subscription successful", {
+              position: "top-center",
+            });
+
+            setTimeout(() => {
+              router.push("/");
+            }, 2000);
           } catch (error) {
             setError("Payment verification failed");
           }
         },
         prefill: {
-          name: "Shubham Mamgain",
-          email: "shubhammamgain@pearlorganisation.com",
+          name: userData?.name,
+          email: userData?.email,
 
           // contact: "9999999999",
         },
@@ -286,7 +290,7 @@ function landingpage() {
       };
 
       // Step 3: Open Razorpay Landing
-      const rzp = new Razorpay(options);
+      const rzp = new window.Razorpay(options);
       rzp.open();
 
       rzp.on("payment.failed", function (response) {
@@ -339,6 +343,31 @@ function landingpage() {
         {Array.isArray(plans) &&
           plans.length > 0 &&
           plans.map((plan) => (
+            // <div
+            //   key={plan._id}
+            //   className="max-w-sm mx-auto p-6 bg-white rounded-2xl shadow-lg border border-gray-200 text-center"
+            // >
+            //   <h2 className="text-xl font-semibold text-gray-800">
+            //     Subscription Plan
+            //   </h2>
+            //   <p className="text-3xl font-bold text-blue-600 mt-2">
+            //     {plan?.currency} {plan?.basePrice}
+            //   </p>
+            //   <p className="text-gray-600 mt-1">
+            //     for {Math.ceil(plan?.duration / 30)} months{" "}
+            //   </p>
+            //   <button
+            //     onClick={() =>
+            //       handleSubscription({
+            //         planId: plan.planId,
+            //       })
+            //     }
+            //     className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            //   >
+            //     Join Now
+            //   </button>
+            // </div>
+
             <div
               key={plan._id}
               className="max-w-sm mx-auto p-6 bg-white rounded-2xl shadow-lg border border-gray-200 text-center"
@@ -346,12 +375,24 @@ function landingpage() {
               <h2 className="text-xl font-semibold text-gray-800">
                 Subscription Plan
               </h2>
+
               <p className="text-3xl font-bold text-blue-600 mt-2">
-                {plan?.currency} {plan?.price}
+                {plan?.currency} {plan?.basePrice}
               </p>
+
               <p className="text-gray-600 mt-1">
-                for {Math.ceil(plan?.duration / 30)} months{" "}
+                for {Math.ceil(plan?.duration / 30)} months
               </p>
+
+              <p className="text-lg font-medium text-gray-800 mt-2">
+                Final Price:{" "}
+                <span className="text-green-600 font-bold">
+                  {plan?.currency} {(plan?.basePrice * 1.18).toFixed(2)}
+                </span>
+              </p>
+
+              <p className="text-sm text-gray-500">(Includes 18% GST)</p>
+
               <button
                 onClick={() =>
                   handleSubscription({
