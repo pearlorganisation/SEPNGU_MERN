@@ -40,7 +40,8 @@ export const onBoardUser = async (req, res, next) => {
     });
     return res.status(201).json({ msg: "Success", status: true, user });
   } catch (err) {
-    next(err);
+    console.log(err);
+    res.status(500).send("Internal Server Error...");
   }
 };
 
