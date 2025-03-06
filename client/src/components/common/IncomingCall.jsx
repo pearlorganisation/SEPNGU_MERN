@@ -5,7 +5,7 @@ import React from "react";
 
 function IncomingCall() {
   const [{ incomingVoiceCall, socket }, dispatch] = useStateProvider();
-
+  console.log("incomingVoiceCall", incomingVoiceCall);
   const acceptCall = () => {
     dispatch({
       type: reducerCases.SET_VOICE_CALL,

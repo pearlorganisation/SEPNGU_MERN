@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(
-  cors({ 
+  cors({
     origin: [
       "http://localhost:3000",
       "http://localhost:5173",
@@ -63,7 +63,7 @@ const activeCalls = new Map();
 
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
-
+  console.log("Active call: ", activeCalls);
   // When a backend restart happens, request user ID again
   socket.emit("request-userId");
 
@@ -106,13 +106,14 @@ io.on("connection", (socket) => {
     const sendUserSocket = global.onlineUsers.get(data.to);
     console.log("activeCalls: ", activeCalls);
     if (activeCalls.has(data.to)) {
+      console.log("activeCalls when user is busy: ", activeCalls);
       // If the recipient is already on a call, notify the caller
       socket.emit("user-busy", { to: data.to });
     } else {
       // Mark both users as in a call
       activeCalls.set(data.from, data.to);
       activeCalls.set(data.to, data.from);
-
+      console.log("activeCalls when user is not busy: ", activeCalls);
       if (sendUserSocket) {
         socket.to(sendUserSocket).emit("incoming-voice-call", {
           from: data.from,

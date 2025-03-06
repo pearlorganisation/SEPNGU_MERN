@@ -15,6 +15,8 @@ function Container({ data }) {
   const [localStream, setLocalStream] = useState(undefined);
   const [publishStream, setPublishStream] = useState(undefined);
 
+  console.log("data: ", data); // data:  {id: 1, name: "spengu", profilePicture: "/images/spengu.jpg", type: "out-going", callType: "video", roomID: 3437848}
+
   useEffect(() => {
     if (data.type === "out-going") {
       socket.current.on("accept-call", () => setCallAccepted(true));
