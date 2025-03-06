@@ -21,6 +21,8 @@ import "@/styles/globals.css";
 import { ToastContainer } from "react-toastify";
 
 export default function App({ Component, pageProps }) {
+  console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+
   return (
     <StateProvider initialState={initialState} reducer={reducer}>
       <Head>
