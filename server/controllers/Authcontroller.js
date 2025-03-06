@@ -30,6 +30,7 @@ export const onBoardUser = async (req, res, next) => {
       mobileNumber,
       image: profilePicture,
     } = req.body;
+
     if (!email || !name || !profilePicture || !mobileNumber) {
       return res.send("Email, Name, Mobile and Image are required");
     }
