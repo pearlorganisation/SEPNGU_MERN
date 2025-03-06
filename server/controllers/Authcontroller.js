@@ -24,7 +24,7 @@ export const checkUser = async (req, res, next) => {
 export const onBoardUser = async (req, res, next) => {
   try {
     const { email, name, about, mobileNumber, image } = req.body;
-    console.log('req body',req.body);
+    console.log("req body", req.body);
     if (!email || !name || !image || !mobileNumber) {
       return res.status(400).send("Email, Name, Mobile and Image are required");
     }
@@ -66,7 +66,10 @@ export const getAllUsers = async (req, res, next) => {
     });
     return res.status(200).send({ users: usersGroupByInitialLetter });
   } catch (err) {
-    next(err);
+    console.log(err);
+    res
+      .status(500)
+      .json({ msg: "Internal Server Error", status: false, error: err });
   }
 };
 

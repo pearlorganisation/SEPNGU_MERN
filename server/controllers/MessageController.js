@@ -238,6 +238,5 @@ export const getInitialContactswithMessages = async (req, res, next) => {
     res
       .status(500)
       .json({ msg: "Internal Server Error", status: false, error: err });
-   
   }
 };
