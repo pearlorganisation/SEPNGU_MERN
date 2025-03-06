@@ -23,20 +23,14 @@ export const checkUser = async (req, res, next) => {
 
 export const onBoardUser = async (req, res, next) => {
   try {
-    const {
-      email,
-      name,
-      about,
-      mobileNumber,
-      image: profilePicture,
-    } = req.body;
+    const { email, name, about, mobileNumber, image } = req.body;
 
-    if (!email || !name || !profilePicture || !mobileNumber) {
+    if (!email || !name || !image || !mobileNumber) {
       return res.status(400).send("Email, Name, Mobile and Image are required");
     }
     const prisma = getPrismaInstance();
     const user = await prisma.user.create({
-      data: { email, name, about, profilePicture, mobileNumber },
+      data: { email, name, about, profilePicture: image, mobileNumber },
     });
     return res.status(201).json({ msg: "Success", status: true, user });
   } catch (err) {
