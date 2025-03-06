@@ -234,6 +234,10 @@ export const getInitialContactswithMessages = async (req, res, next) => {
       onlineUsers: onlineUsersArray,
     });
   } catch (err) {
-    next(err);
+    console.log(err);
+    res
+      .status(500)
+      .json({ msg: "Internal Server Error", status: false, error: err });
+   
   }
 };
