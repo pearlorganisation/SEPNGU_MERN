@@ -157,8 +157,9 @@ function Container({ data }) {
     // console.log("data", data);
     if (data.callType === "voice") {
       console.log("audio call rejected 1");
-      socket.current.emit("reject-voice-call", {
+      socket.current.emit("reject-voice-call", { 
         from: id, // callee id
+        to: userInfo.id,
       });
     } else {
       socket.current.emit("reject-video-call", {

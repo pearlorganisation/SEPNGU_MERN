@@ -5,8 +5,10 @@ import React from "react";
 
 function IncomingCall() {
   // This component is used to display incoming voice call for callee(who didn't start the call)
-  const [{ incomingVoiceCall, socket }, dispatch] = useStateProvider();
+  const [{ incomingVoiceCall, userInfo, socket }, dispatch] =
+    useStateProvider();
   console.log("incomingVoiceCall", incomingVoiceCall); //{calltype,id,name,profilePicture,roomId} of a person who is calling(started a call)
+  console.log("userInfo", userInfo); //{id, name, email, profilePicture} of a person who is receiving the call
   const acceptCall = () => {
     dispatch({
       type: reducerCases.SET_VOICE_CALL,
@@ -20,8 +22,11 @@ function IncomingCall() {
   };
 
   const rejectCall = () => {
-    console.log("audio call rejected 2");
-    socket.current.emit("reject-voice-call", { from: incomingVoiceCall.id });
+    console.log("audio call rejected 2"); // on callee end
+    socket.current.emit("reject-voice-call", {
+      from: incomingVoiceCall.id,
+      to: userInfo.id,
+    }); // reject call of caller id
     dispatch({ type: reducerCases.END_CALL });
   };
   return (
