@@ -102,7 +102,8 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("outgoing-voice-call", (data) => { // emited from voicecall.jsx
+  socket.on("outgoing-voice-call", (data) => {
+    // emited from voicecall.jsx
     console.log("data: ", data); //{to: otheruser, from: {id, propic, name}, callType: "voice", roomId} when clicking on call button user info come here
     const sendUserSocket = global.onlineUsers.get(data.to);
     console.log("sendUserSocket: ", sendUserSocket);
@@ -118,7 +119,8 @@ io.on("connection", (socket) => {
       activeCalls.set(data.to, data.from);
       console.log("activeCalls when user is not busy: ", activeCalls);
       if (sendUserSocket) {
-        socket.to(sendUserSocket).emit("incoming-voice-call", { //listned on main.jsx
+        socket.to(sendUserSocket).emit("incoming-voice-call", {
+          //listned on main.jsx
           from: data.from, //{id, propic, name}
           roomId: data.roomId,
           callType: data.callType, // voice
@@ -127,7 +129,8 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("accept-incoming-call", ({ id }) => { // emited from incomingcall.jsx(callee) , id of a caller who is calling
+  socket.on("accept-incoming-call", ({ id }) => {
+    // emited from incomingcall.jsx(callee) , id of a caller who is calling
     const sendUserSocket = global.onlineUsers.get(id);
     socket.to(sendUserSocket).emit("accept-call");
   });
