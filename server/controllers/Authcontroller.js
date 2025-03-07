@@ -55,6 +55,7 @@ export const getAllUsers = async (req, res, next) => {
         mobileNumber: true,
       },
     });
+    console.log("get all users", users);
     const usersGroupByInitialLetter = {};
 
     users.forEach((user) => {
