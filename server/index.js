@@ -102,10 +102,13 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("outgoing-voice-call", (data) => {
+  socket.on("outgoing-voice-call", (data) => { // emited from voicecall.jsx
+    console.log("data: ", data); //{to: otheruser, from: {id, propic, name}, callType: "voice", roomId} when clicking on call button user info come here
     const sendUserSocket = global.onlineUsers.get(data.to);
+    console.log("sendUserSocket: ", sendUserSocket);
     console.log("activeCalls: ", activeCalls);
     if (activeCalls.has(data.to)) {
+      //41
       console.log("activeCalls when user is busy: ", activeCalls);
       // If the recipient is already on a call, notify the caller
       socket.emit("user-busy", { to: data.to });
@@ -115,29 +118,21 @@ io.on("connection", (socket) => {
       activeCalls.set(data.to, data.from);
       console.log("activeCalls when user is not busy: ", activeCalls);
       if (sendUserSocket) {
-        socket.to(sendUserSocket).emit("incoming-voice-call", {
-          from: data.from,
+        socket.to(sendUserSocket).emit("incoming-voice-call", { //listned on main.jsx
+          from: data.from, //{id, propic, name}
           roomId: data.roomId,
-          callType: data.callType,
+          callType: data.callType, // voice
         });
       }
     }
   });
 
-  socket.on("accept-incoming-call", ({ id }) => {
+  socket.on("accept-incoming-call", ({ id }) => { // emited from incomingcall.jsx(callee) , id of a caller who is calling
     const sendUserSocket = global.onlineUsers.get(id);
     socket.to(sendUserSocket).emit("accept-call");
   });
 
   // // If suer 2 disconnect the call data.from is user 1, and user 1 will listen to voice call rejected socket
-  // socket.on("reject-voice-call", (data) => {
-  //   const sendUserSocket = onlineUsers.get(data.from); // data.from is id of another person which did not reject the voice call
-  //   console.log("sendUserSocket: ", sendUserSocket);
-  //   if (sendUserSocket) {
-  //     socket.to(sendUserSocket).emit("voice-call-rejected"); // send voice call rejected to that user
-  //   }
-  // });
-
   socket.on("reject-voice-call", (data) => {
     const sendUserSocket = global.onlineUsers.get(data.from);
     console.log("sendUserSocket: ", sendUserSocket);

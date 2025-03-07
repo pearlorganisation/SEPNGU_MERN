@@ -4,14 +4,15 @@ import Image from "next/image";
 import React from "react";
 
 function IncomingCall() {
+  // This component is used to display incoming voice call for callee(who didn't start the call)
   const [{ incomingVoiceCall, socket }, dispatch] = useStateProvider();
-  console.log("incomingVoiceCall", incomingVoiceCall);
+  console.log("incomingVoiceCall", incomingVoiceCall); //{calltype,id,name,profilePicture,roomId} of a person who is calling(started a call)
   const acceptCall = () => {
     dispatch({
       type: reducerCases.SET_VOICE_CALL,
-      voiceCall: { ...incomingVoiceCall, type: "in-coming" },
+      voiceCall: { ...incomingVoiceCall, type: "in-coming" }, //storing data of voice call in state
     });
-    socket.current.emit("accept-incoming-call", { id: incomingVoiceCall.id });
+    socket.current.emit("accept-incoming-call", { id: incomingVoiceCall.id }); //caller id
     dispatch({
       type: reducerCases.SET_INCOMING_VOICE_CALL,
       incomingVoiceCall: undefined,

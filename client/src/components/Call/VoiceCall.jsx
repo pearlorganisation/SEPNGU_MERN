@@ -4,10 +4,11 @@ import React, { useEffect } from "react";
 const Container = dynamic(() => import("./Container"), { ssr: false });
 function VoiceCall() {
   const [{ voiceCall, socket, userInfo }] = useStateProvider();
-
+  console.log("voiceCall:", voiceCall);
   useEffect(() => {
     if (voiceCall.type === "out-going") {
       socket.current.emit("outgoing-voice-call", {
+        // when click on voice call button this emit will be listned on server side
         to: voiceCall.id,
         from: {
           id: userInfo.id,
@@ -15,7 +16,7 @@ function VoiceCall() {
           name: userInfo.name,
         },
         callType: voiceCall.callType,
-        roomId: voiceCall.roomId,
+        roomId: voiceCall.roomID,
       });
     }
   }, [voiceCall]);

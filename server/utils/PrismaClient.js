@@ -4,7 +4,9 @@ let prismaInstance = null;
 
 function getPrismaInstance() {
   if (!prismaInstance) {
-    prismaInstance = new PrismaClient();
+    prismaInstance = new PrismaClient({
+      log: ["query", "info", "warn", "error"], // Enables detailed logging
+    });
   }
   return prismaInstance;
 }
