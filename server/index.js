@@ -35,7 +35,7 @@ app.use("/uploads/images", express.static("uploads/images"));
 
 app.get("/", (req, res) => {
   res.send("API Works");
-});
+}); 
 
 app.use("/api/auth", AuthRoutes);
 app.use("/api/messages", MessageRoutes);

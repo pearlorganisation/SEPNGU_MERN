@@ -6,6 +6,7 @@ const Room = dynamic(() => import("./Room"), { ssr: false });
 function VoiceCall() {
   const [{ voiceCall, socket, userInfo }] = useStateProvider();
   console.log("voiceCall:", voiceCall);
+
   useEffect(() => {
     if (voiceCall.type === "out-going") {
       socket.current.emit("outgoing-voice-call", {
