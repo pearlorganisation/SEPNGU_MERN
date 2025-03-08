@@ -17,11 +17,15 @@ const Room = ({ data }) => {
     zc.joinRoom({
       container: element,
       scenario: { mode: ZegoUIKitPrebuilt.OneONoneCall },
+      // Disable Video & Enable Audio Only
+      turnOnCameraWhenJoining: false, // Disable Camera
+      turnOnMicrophoneWhenJoining: true, // Enable Microphone
+      showScreenSharingButton: false, // Disable Screen Sharing
     });
   };
   return (
     <div ref={myMeet}>
-      <button>Join</button>
+      <button>Join Voice Call</button>
     </div>
   );
 };

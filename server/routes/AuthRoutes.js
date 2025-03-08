@@ -11,6 +11,6 @@ const router = Router();
 router.post("/check-user", checkUser);
 router.post("/onboard-user", onBoardUser);
 router.get("/get-contacts", getAllUsers);
-router.get("/generate-token/:userId/:roomId", generateToken);
-
+router.get("/generate-token/:userId", generateToken);
+// router.get("/generate-token/:userId/:roomId", generateToken);
 export default router;
