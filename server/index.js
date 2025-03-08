@@ -102,7 +102,8 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("outgoing-voice-call", (data) => { // emited from voicecall.jsx
+  socket.on("outgoing-voice-call", (data) => {
+    // emited from voicecall.jsx
     console.log("data: ", data); //{to: otheruser, from: {id, propic, name}, callType: "voice", roomId} when clicking on call button user info come here
     const sendUserSocket = global.onlineUsers.get(data.to);
     console.log("sendUserSocket: ", sendUserSocket);
@@ -114,11 +115,12 @@ io.on("connection", (socket) => {
       socket.emit("user-busy", { to: data.to });
     } else {
       // Mark both users as in a call
-      activeCalls.set(data.from, data.to);
-      activeCalls.set(data.to, data.from);
+      activeCalls.set(data.from.id, data.to);
+      activeCalls.set(data.to, data.from.id);
       console.log("activeCalls when user is not busy: ", activeCalls);
       if (sendUserSocket) {
-        socket.to(sendUserSocket).emit("incoming-voice-call", { //listned on main.jsx
+        socket.to(sendUserSocket).emit("incoming-voice-call", {
+          //listned on main.jsx
           from: data.from, //{id, propic, name}
           roomId: data.roomId,
           callType: data.callType, // voice
@@ -127,21 +129,26 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("accept-incoming-call", ({ id }) => { // emited from incomingcall.jsx(callee) , id of a caller who is calling
+  socket.on("accept-incoming-call", ({ id }) => {
+    // emited from incomingcall.jsx(callee) , id of a caller who is calling
     const sendUserSocket = global.onlineUsers.get(id);
-    socket.to(sendUserSocket).emit("accept-call");
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("accept-call");
+    }
   });
 
   // // If suer 2 disconnect the call data.from is user 1, and user 1 will listen to voice call rejected socket
   socket.on("reject-voice-call", (data) => {
-    const sendUserSocket = global.onlineUsers.get(data.from);
+    //emited from incomingcall.jsx(callee)
+    const sendUserSocket = global.onlineUsers.get(data.from); // {from: incomingVoiceCall.id} // id of a caller who is calling
     console.log("sendUserSocket: ", sendUserSocket);
     if (sendUserSocket) {
-      socket.to(sendUserSocket).emit("voice-call-rejected");
+      socket.to(sendUserSocket).emit("voice-call-rejected"); // end call of caller
     }
     // Remove from active calls
     activeCalls.delete(data.from);
     activeCalls.delete(data.to);
+    console.log("activeCalls after rejection: ", activeCalls);
   });
 
   socket.on("disconnect", () => {
@@ -171,32 +178,6 @@ io.on("connection", (socket) => {
       });
     }
   });
-
-  // // Handle call end event - Added
-  // socket.on("call-ended", (data) => {
-  //   activeCalls.delete(data.from);
-  //   activeCalls.delete(data.to);
-  // });
-
-  // [ No video call needed ]
-  // socket.on("outgoing-video-call", (data) => {
-  //   const sendUserSocket = onlineUsers.get(data.to);
-  //   if (sendUserSocket) {
-  //     socket.to(sendUserSocket).emit("incoming-video-call", {
-  //       from: data.from,
-  //       roomId: data.roomId,
-  //       callType: data.callType,
-  //     });
-  //   }
-  // });
-
-  // [ No video call needed ]
-  // socket.on("reject-video-call", (data) => {
-  //   const sendUserSocket = onlineUsers.get(data.from);
-  //   if (sendUserSocket) {
-  //     socket.to(sendUserSocket).emit("video-call-rejected");
-  //   }
-  // });
 });
 
 export { io };

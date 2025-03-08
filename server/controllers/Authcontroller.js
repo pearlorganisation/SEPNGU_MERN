@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import getPrismaInstance from "../utils/PrismaClient.js";
 import { generateToken04 } from "../utils/TokenGeneretor.js";
+import crypto from "crypto";
 dotenv.config();
 
 export const checkUser = async (req, res, next) => {
@@ -74,62 +75,52 @@ export const getAllUsers = async (req, res, next) => {
   }
 };
 
+// export const generateToken = (req, res, next) => {
+//   try {
+//     const appId = parseInt(process.env.ZEGO_APP_ID, 10);
+//     const serverSecret = process.env.ZEGO_SERVER_SECRET;
+//     const userId = req.params.userId;
+//     const effectiveTime = 3600;
+//     const payload = "";
+
+//     if (!appId || !serverSecret || !userId) {
+//       return res
+//         .status(400)
+//         .json({ error: "User id, app id, and server secret are required." });
+//     }
+
+//     const token = generateToken04(
+//       appId,
+//       userId,
+//       serverSecret,
+//       effectiveTime,
+//       payload
+//     );
+//     return res.status(200).json({ token });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
 export const generateToken = (req, res, next) => {
-  try {
-    const appId = parseInt(process.env.ZEGO_APP_ID, 10);
-    const serverSecret = process.env.ZEGO_SERVER_SECRET;
-    const userId = req.params.userId;
-    const effectiveTime = 3600;
-    const payload = "";
+  const { roomId, userId } = req.params;
+  console.log("roomid and user id: ", roomId, " ", userId);
+  console.log("Zego App Id: ", process.env.ZEGO_APP_ID);
+  const payload = {
+    app_id: process.env.ZEGO_APP_ID,
+    room_id: roomId,
+    user_id: userId,
+    privilege: { 1: 1, 2: 1 }, // Publish & Subscribe permissions
+    exp: Math.floor(Date.now() / 1000) + 3600, // Expiry 1 hour
+  };
 
-    console.log("ZEGO_APP_ID:", process.env.ZEGO_APP_ID);
-    console.log(
-      "ZEGO_SERVER_SECRET:",
-      process.env.ZEGO_SERVER_SECRET ? "Present" : "Missing"
-    );
-    console.log("Received userId:", userId);
+  const payloadStr = JSON.stringify(payload);
+  const hash = crypto
+    .createHmac("sha256", process.env.ZEGO_SERVER_SECRET)
+    .update(payloadStr)
+    .digest("base64");
 
-    if (!appId || !serverSecret || !userId) {
-      return res
-        .status(400)
-        .json({ error: "User id, app id, and server secret are required." });
-    }
+  const token = Buffer.from(`${payloadStr}.${hash}`).toString("base64");
 
-    const token = generateToken04(
-      appId,
-      userId,
-      serverSecret,
-      effectiveTime,
-      payload
-    );
-    return res.status(200).json({ token });
-  } catch (err) {
-    next(err);
-  }
+  return res.status(200).json({ token });
 };
-
-// export const generateToken = (req,res,next) =>{
-//     try {
-//         const appId = parseInt(process.env.ZEGO_APP_ID);
-//         const serverSecret = process.env.ZEGO_SERVER_SECRET;
-//         const userId = req.params.userId;
-//         const effectiveTime = 3600;
-//         const payload = ""
-//         if(appId && serverSecret && userId){
-//             const token = generateToken04(
-//                 appId,
-//                 userId,
-//                 serverSecret,
-//                 effectiveTime,
-//                 payload,
-//             );
-//             res.status(200).json({ token });
-//         }
-//         else{
-//             return res.status(400).send("User id, app id and server secret is required.");
-//         }
-//     }
-//     catch(err){
-//         next(err)
-//     }
-// }
