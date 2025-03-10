@@ -3,15 +3,18 @@ import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { useStateProvider } from "@/context/StateContext";
 const Room = ({ data }) => {
   const [{ userInfo }] = useStateProvider();
-  const myMeet = async (element) => {
+  console.log("Room data: ", data);
+  console.log("User info in room: ", userInfo);
+  console.log("App id: ", process.env.NEXT_PUBLIC_ZEGO_APP_ID);
+  let myMeet = async (element) => {
     const appId = process.env.NEXT_PUBLIC_ZEGO_APP_ID;
     const serverSecret = process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET;
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
       appId,
       serverSecret,
-      data.roomID.toString(), // room id
-      userInfo.id.toString(), // userid
-      userInfo.name // user name
+      "893247", // room id data.roomID.toString()
+      Date.now().toString(), // userid
+      "Nayan" // user name
     );
     const zc = ZegoUIKitPrebuilt.create(kitToken);
     zc.joinRoom({
@@ -24,8 +27,8 @@ const Room = ({ data }) => {
     });
   };
   return (
-    <div ref={myMeet}>
-      <button>Join Voice Call</button>
+    <div>
+      <div ref={myMeet}></div>
     </div>
   );
 };
