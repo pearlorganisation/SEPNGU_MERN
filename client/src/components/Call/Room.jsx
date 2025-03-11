@@ -7,16 +7,35 @@ const Room = ({ data }) => {
   console.log("User info in room: ", userInfo);
   console.log("App id: ", process.env.NEXT_PUBLIC_ZEGO_APP_ID);
   let myMeet = async (element) => {
-    const appId = process.env.NEXT_PUBLIC_ZEGO_APP_ID;
+    console.log("Room data: ", element);
+
+    const appId = parseInt(process.env.NEXT_PUBLIC_ZEGO_APP_ID);
     const serverSecret = process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET;
+    const roomID = data.roomID.toString();
+    const userInfoId = userInfo.id.toString();
+    const userName = userInfo.name;
+
+    console.log("asdsadsadsadsadsadsadsadsadsa");
+    console.log("serverSecret", typeof serverSecret);
+    console.log("roomID", typeof roomID);
+    console.log("appId", typeof appId);
+    console.log("userInfo", typeof userInfoId);
+    console.log("userName", typeof userName);
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
       appId,
       serverSecret,
-      "893247", // room id data.roomID.toString()
-      Date.now().toString(), // userid
-      "Nayan" // user name
+      roomID, // room id other user{name, email, profilePic, id, type, callType, roomID}
+      userInfoId, // userid
+      userName // user name
     );
+
+    console.log("kitToken: ", kitToken);
     const zc = ZegoUIKitPrebuilt.create(kitToken);
+    const stream = await window.navigator.mediaDevices.getUserMedia({
+      video: false,
+      audio: true,
+    });
+    console.log(stream);
     zc.joinRoom({
       container: element,
       scenario: { mode: ZegoUIKitPrebuilt.OneONoneCall },

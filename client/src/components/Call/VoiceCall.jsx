@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 const Room = dynamic(() => import("./Room"), { ssr: false });
 function VoiceCall() {
   const [{ voiceCall, socket, userInfo }] = useStateProvider();
-  console.log("voiceCall:", voiceCall);
+  console.log("voiceCall:", voiceCall); //{name, email, profilePic, id, type, callType, roomID}
 
   useEffect(() => {
     if (voiceCall.type === "out-going") {
