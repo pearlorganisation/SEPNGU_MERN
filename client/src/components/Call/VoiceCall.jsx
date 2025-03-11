@@ -1,7 +1,7 @@
 import { useStateProvider } from "@/context/StateContext";
 import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
-// const Container = dynamic(() => import("./Container"), { ssr: false });
+
 const Room = dynamic(() => import("./Room"), { ssr: false });
 function VoiceCall() {
   const [{ voiceCall, socket, userInfo }] = useStateProvider();
@@ -24,6 +24,7 @@ function VoiceCall() {
   }, [voiceCall]);
 
   return <Room data={voiceCall} />;
+  // <Container data={voiceCall} />;
 }
 
 export default VoiceCall;
