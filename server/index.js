@@ -128,11 +128,11 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("accept-incoming-call", ({ id }) => {
+  socket.on("accept-incoming-call", ({ id, roomId }) => {
     // emited from incomingcall.jsx(callee) , id of a caller who is calling
     const sendUserSocket = global.onlineUsers.get(id);
     if (sendUserSocket) {
-      socket.to(sendUserSocket).emit("accept-call");
+      socket.to(sendUserSocket).emit("accept-call", { roomId }); // accept call of caller
     }
   });
 

@@ -14,18 +14,25 @@ function Container({ data }) {
   const [zgVar, setZgVar] = useState(undefined);
   const [localStream, setLocalStream] = useState(undefined);
   const [publishStream, setPublishStream] = useState(undefined);
+  const [roomId, setRoomId] = useState(undefined);
 
   console.log("data: ", data); // data:  {id: 1, name: "spengu", profilePicture: "/images/spengu.jpg", type: "out-going", callType: "video", roomID: 3437848}
 
   useEffect(() => {
     if (data.type === "out-going") {
-      socket.current.on("accept-call", () => setCallAccepted(true));
+      socket.current.on("accept-call", ({ roomId }) => {
+        setCallAccepted(true);
+        setRoomId(roomId);
+      });
     } else {
       setTimeout(() => {
         setCallAccepted(true);
+        setRoomId(roomId);
       }, 1000);
     }
   }, [data]);
+
+  console.log("ROOM ID: ", roomId);
 
   //    useEffect(()=>{
   //         const getTOken = async() =>{
@@ -157,7 +164,7 @@ function Container({ data }) {
     // console.log("data", data);
     if (data.callType === "voice") {
       console.log("audio call rejected 1");
-      socket.current.emit("reject-voice-call", { 
+      socket.current.emit("reject-voice-call", {
         from: id, // callee id
         to: userInfo.id,
       });

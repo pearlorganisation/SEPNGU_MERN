@@ -14,7 +14,10 @@ function IncomingCall() {
       type: reducerCases.SET_VOICE_CALL,
       voiceCall: { ...incomingVoiceCall, type: "in-coming" }, //storing data of voice call in state
     });
-    socket.current.emit("accept-incoming-call", { id: incomingVoiceCall.id }); //caller id
+    socket.current.emit("accept-incoming-call", {
+      id: incomingVoiceCall.id,
+      roomId: incomingVoiceCall.roomId,
+    }); //caller id
     dispatch({
       type: reducerCases.SET_INCOMING_VOICE_CALL,
       incomingVoiceCall: undefined,
