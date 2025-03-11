@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { useStateProvider } from "@/context/StateContext";
 const Room = ({ data }) => {
@@ -17,6 +17,7 @@ const Room = ({ data }) => {
       userInfo.id.toString(), // userid
       userInfo.name // user name
     );
+
     const zc = ZegoUIKitPrebuilt.create(kitToken);
     zc.joinRoom({
       container: element,
@@ -28,11 +29,8 @@ const Room = ({ data }) => {
       // showScreenSharingButton: false, // Disable Screen Sharing
     });
   };
-  return (
-    <div ref={myMeet}>
-      <button>Join</button>
-    </div>
-  );
+
+  return <div ref={myMeet}></div>;
 };
 
 export default Room;
