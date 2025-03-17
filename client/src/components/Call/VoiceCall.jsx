@@ -18,7 +18,7 @@ function VoiceCall() {
           name: userInfo.name,
         },
         callType: voiceCall.callType,
-        roomId: voiceCall.roomID,
+        roomId: voiceCall.roomId,
       });
     }
   }, [voiceCall]);

@@ -111,7 +111,7 @@ function Main() {
         });
       });
 
-      socket.current.on("incoming-voice-call", ({ from, roomId, callType }) => {
+      socket.current.on("incoming-voice-call", ({ from, roomId, callType }) => { //caller id in from
         dispatch({
           type: reducerCases.SET_INCOMING_VOICE_CALL,
           incomingVoiceCall: { ...from, roomId, callType },

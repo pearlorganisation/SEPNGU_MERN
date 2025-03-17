@@ -41,7 +41,7 @@ function ChatHeader() {
         ...currentChatUser,
         type: "out-going",
         callType: "voice",
-        roomID: Date.now(),
+        roomId: Date.now(),
       },
     });
   };

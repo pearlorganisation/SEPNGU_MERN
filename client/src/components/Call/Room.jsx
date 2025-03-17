@@ -13,7 +13,7 @@ const Room = ({ data }) => {
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
       appId,
       sersec,
-      data?.roomID?.toString(), // room id
+      data?.roomId?.toString(), // room id
       userInfo.id.toString(), // userid
       userInfo.name // user name
     );

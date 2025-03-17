@@ -108,7 +108,6 @@ io.on("connection", (socket) => {
     console.log("sendUserSocket: ", sendUserSocket);
     console.log("activeCalls: ", activeCalls);
     if (activeCalls.has(data.to)) {
-      //41
       console.log("activeCalls when user is busy: ", activeCalls);
       // If the recipient is already on a call, notify the caller
       socket.emit("user-busy", { to: data.to });
@@ -120,7 +119,7 @@ io.on("connection", (socket) => {
       if (sendUserSocket) {
         socket.to(sendUserSocket).emit("incoming-voice-call", {
           //listned on main.jsx
-          from: data.from, //{id, propic, name}
+          from: data.from, //{id, propic, name} //caller id
           roomId: data.roomId,
           callType: data.callType, // voice
         });
