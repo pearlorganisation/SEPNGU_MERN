@@ -55,6 +55,9 @@ const Room = ({ data }) => {
         window.location.replace("/");
         // router.push("/");
       },
+      // Disable Video & Enable Audio Only
+      turnOnCameraWhenJoining: false, // Disable Camera
+      turnOnMicrophoneWhenJoining: true, // Enable Microphone
     });
 
     console.log("zc", zc);
