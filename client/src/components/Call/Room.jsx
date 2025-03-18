@@ -58,6 +58,7 @@ const Room = ({ data }) => {
       // Disable Video & Enable Audio Only
       turnOnCameraWhenJoining: false, // Disable Camera
       turnOnMicrophoneWhenJoining: true, // Enable Microphone
+      showCameraToggleButton: false, // Hide camera toggle button
     });
 
     console.log("zc", zc);
