@@ -114,7 +114,31 @@ io.on("connection", (socket) => {
     } else {
       // Mark both users as in a call
       activeCalls.set(data.from.id, data.to);
-      activeCalls.set(data.to, data.from.id);
+      // activeCalls.set(data.to, data.from.id);
+
+      setTimeout(() => {
+        // console.log("We are comming in settimeout", data);
+        if (activeCalls.has(data.from.id)) {
+          if (activeCalls.has(data.to)) {
+            return;
+          }
+
+          activeCalls.delete(data.from.id);
+          activeCalls.delete(data.to);
+
+          console.log("activeCalls in timeouts", activeCalls);
+
+          // const user1 = global.onlineUsers.get(data.from.id);
+          const user2 = global.onlineUsers.get(data.to);
+          if (user2) {
+            console.log("user2", user2);
+            socket.to(user2).emit("outgoing-voice-call", {
+              call: "autoRejected",
+            });
+          }
+        }
+      }, 30000);
+
       console.log("activeCalls when user is not busy: ", activeCalls);
       if (sendUserSocket) {
         socket.to(sendUserSocket).emit("incoming-voice-call", {
@@ -130,12 +154,15 @@ io.on("connection", (socket) => {
   socket.on("accept-incoming-call", ({ id, roomId }) => {
     // emited from incomingcall.jsx(callee) , id of a caller who is calling
     const sendUserSocket = global.onlineUsers.get(id);
+    console.log("We are here in accept-incoming-call");
+    const peerConnection = activeCalls.get(id);
+    activeCalls.set(peerConnection, id);
     if (sendUserSocket) {
       socket.to(sendUserSocket).emit("accept-call", { roomId }); // accept call of caller
     }
   });
 
-  // // If suer 2 disconnect the call data.from is user 1, and user 1 will listen to voice call rejected socket
+  // // If user 2 disconnect the call data.from is user 1, and user 1 will listen to voice call rejected socket
   socket.on("reject-voice-call", (data) => {
     //emited from incomingcall.jsx(callee)
     const sendUserSocket = global.onlineUsers.get(data.from); // {from: incomingVoiceCall.id} // id of a caller who is calling
@@ -147,6 +174,20 @@ io.on("connection", (socket) => {
     activeCalls.delete(data.from);
     activeCalls.delete(data.to);
     console.log("activeCalls after rejection: ", activeCalls);
+  });
+
+  socket.on("hangup-user-call", (data) => {
+    console.log("Im coming here", data);
+
+    if (activeCalls.has(parseInt(data?.userID))) {
+      console.log("Before removal", activeCalls);
+
+      const activePair = activeCalls.get(parseInt(data?.userID));
+      activeCalls.delete(parseInt(data?.userID));
+      activeCalls.delete(activePair);
+
+      console.log("After removal", activeCalls);
+    }
   });
 
   socket.on("disconnect", () => {

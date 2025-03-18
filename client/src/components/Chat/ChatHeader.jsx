@@ -9,8 +9,11 @@ import { reducerCases } from "@/context/constans";
 import ContextMenu from "../common/ContextMenu";
 import Link from "next/link";
 import { FaNewspaper, FaPhone, FaRobot } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 function ChatHeader() {
   const [{ currentChatUser, onlineUsers }, dispatch] = useStateProvider();
+
+  const router = useRouter();
 
   const [contextMenuCordinates, setContextMenuCordinates] = useState({
     x: 0,
@@ -79,7 +82,9 @@ function ChatHeader() {
         </Link>
         <MdCall
           className="text-panel-header-icon cursor-pointer text-2xl"
-          onClick={handleVoiceCall}
+          onClick={() => {
+            handleVoiceCall(), router.push("/voiceCall");
+          }}
         />
         {/* <IoVideocam className='text-panel-header-icon cursor-pointer text-xl' onClick={handleVideoCall}/> */}
         <BiSearchAlt2
