@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,10 +12,14 @@ model User {
   email String @unique 
   name String
   profilePicture String @default("")
+  mobileNumber String @unique
   about String @default("")
   sentMessages Messages[] @relation("sentMessages")
   recievedMessages Messages[] @relation("recievedMessages")
+  subscriptions   Subscription[]  @relation("UserToSubscription") // Add relation name
+  notifications Notification[] @relation(name: "UserNotifications") // 👈 One-to-many relation (Fix for the error)
 }
+
 
 model Messages {
   id Int @id @default(autoincrement())
@@ -33,4 +31,54 @@ model Messages {
   message String
   messageStatus String @default("sent")
   createdAt DateTime @default(now())
+}
+
+model Subscription {
+  id              Int      @id @default(autoincrement())
+  userId          Int?     @unique
+  user            User?    @relation("UserToSubscription", fields: [userId], references: [id]) // Add relation name
+  subscriptionId  String   @unique // Razorpay Subscription ID
+  planId         String      // Reference to the Plan model
+  plan           Plan     @relation("PlanToSubscription", fields: [planId], references: [planId])
+  status          SubscriptionStatus @default(CREATED)
+  email           String  // Store email if user isn't logged in yet
+  startDate       DateTime @default(now()) 
+  endDate         DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum SubscriptionStatus {
+  CREATED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  EXPIRED
+}
+
+model Plan {
+  id          Int      @id @default(autoincrement())
+  planId      String   @unique // Razorpay Plan ID
+  name        String   // Plan name
+  description String?  // Plan description
+  basePrice   Float   // Base price before tax
+  gst         Float   // GST amount (18% of base price)
+  finalPrice  Float   // Price after adding GST
+  currency    String   @default("INR") // Currency
+  duration    Int      // Duration in days
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+ subscriptions Subscription[] @relation("PlanToSubscription") // One plan can have many subscriptions
+}
+
+model Notification {
+  id        Int   @id @default(autoincrement()) // Unique Notification ID
+  userId    Int   // User receiving the notification
+  message   String   // Notification message
+  // type      String   // Type of notification (e.g., "plan_expired")
+  isRead    Boolean  @default(false) // Whether the notification has been read
+  createdAt DateTime @default(now()) // Timestamp of notification creation
+  // Relations
+  user      User     @relation(name: "UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
 }

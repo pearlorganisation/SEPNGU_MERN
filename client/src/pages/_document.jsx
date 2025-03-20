@@ -8,7 +8,8 @@ export default function Document() {
         <Main />
         <NextScript />
         <div id="photo-picker-element"></div>
-        
+
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
       </body>
     </Html>
   );

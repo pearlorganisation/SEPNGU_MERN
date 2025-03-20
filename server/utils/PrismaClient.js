@@ -10,3 +10,7 @@ function getPrismaInstance() {
 }
 
 export default getPrismaInstance;
+
+// {
+//       log: ["query", "info", "warn", "error"], // Enables detailed logging
+//     }

@@ -228,10 +228,11 @@ export const getInitialContactswithMessages = async (req, res, next) => {
         },
       });
     }
-    // console.log("------------------ ", users);
 
+    // console.log("------------------ ", users);
     //Inculded current user in online array
     const onlineUsersArray = Array.from(onlineUsers.keys());
+    console.log("online user in getInitialContacts: ", onlineUsersArray);
     if (!onlineUsersArray.includes(userId)) {
       onlineUsersArray.push(userId); // Ensure current user is part of onlineUsers
     }
@@ -241,6 +242,9 @@ export const getInitialContactswithMessages = async (req, res, next) => {
       onlineUsers: onlineUsersArray,
     });
   } catch (err) {
-    next(err);
+    console.log(err);
+    res
+      .status(500)
+      .json({ msg: "Internal Server Error", status: false, error: err });
   }
 };

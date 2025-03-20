@@ -14,16 +14,25 @@ function Container({ data }) {
   const [zgVar, setZgVar] = useState(undefined);
   const [localStream, setLocalStream] = useState(undefined);
   const [publishStream, setPublishStream] = useState(undefined);
+  const [roomId, setRoomId] = useState(undefined);
+
+  console.log("data: ", data); // data:  {id: 1, name: "spengu", profilePicture: "/images/spengu.jpg", type: "out-going", callType: "video", roomID: 3437848}
 
   useEffect(() => {
     if (data.type === "out-going") {
-      socket.current.on("accept-call", () => setCallAccepted(true));
+      socket.current.on("accept-call", ({ roomId }) => {
+        setCallAccepted(true);
+        setRoomId(roomId);
+      });
     } else {
       setTimeout(() => {
         setCallAccepted(true);
+        setRoomId(roomId);
       }, 1000);
     }
   }, [data]);
+
+  console.log("ROOM ID: ", roomId);
 
   //    useEffect(()=>{
   //         const getTOken = async() =>{
@@ -157,6 +166,7 @@ function Container({ data }) {
       console.log("audio call rejected 1");
       socket.current.emit("reject-voice-call", {
         from: id, // callee id
+        to: userInfo.id,
       });
     } else {
       socket.current.emit("reject-video-call", {
@@ -196,7 +206,7 @@ function Container({ data }) {
       <div className="h-16 w-16 bg-red-600 flex items-center justify-center rounded-full">
         <MdOutlineCallEnd
           className="text-3xl cursor-pointer"
-          onClick={endCall}
+          onClick={endCall} // end call when call is being made and both user is in call
         />
       </div>
     </div>
