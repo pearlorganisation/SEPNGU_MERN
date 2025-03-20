@@ -88,6 +88,7 @@ function ChatHeader() {
         />
         {/* <IoVideocam className='text-panel-header-icon cursor-pointer text-xl' onClick={handleVideoCall}/> */}
         <BiSearchAlt2
+          size={24}
           className="text-panel-header-icon cursor-pointer text-2xl"
           onClick={() => dispatch({ type: reducerCases.SET_MESSAGE_SEARCH })}
         />

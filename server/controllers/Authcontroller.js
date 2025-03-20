@@ -29,6 +29,15 @@ export const onBoardUser = async (req, res, next) => {
     if (!email || !name || !image || !mobileNumber) {
       return res.status(400).send("Email, Name, Mobile and Image are required");
     }
+
+    // Mobile number validation (example: 10 digits, no special characters)
+    const mobileRegex = /^[0-9]{10}$/;
+    if (!mobileRegex.test(mobileNumber)) {
+      return res
+        .status(400)
+        .send("Invalid mobile number. It should be 10 digits.");
+    }
+
     const prisma = getPrismaInstance();
     const user = await prisma.user.create({
       data: { email, name, about, profilePicture: image, mobileNumber },

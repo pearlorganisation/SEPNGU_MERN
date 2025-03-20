@@ -41,21 +41,21 @@ function ChatListHeader() {
       <div className="cursor-pointer">
         <Avtar type="sm" image={userInfo?.profileImage || null} />
       </div>
-      <div className="flex gap-6">
+      <div className="flex flex-row  gap-6">
         <Link
           href="/showpdf"
-          className="w-full max-w-[190px] max-h-[50px] sm:w-[50px] md:w-[50px] lg:w-[108px] items-center rounded-md bg-orange-50 mt-1 mr-12 px-3 py-0.1 text-sm font-medium text-black-800 ring-1  ring-inset transition hover:bg-orange-100"
+          className="w-full  items-center rounded-md bg-orange-50 mt-1 mr-12 px-3 py-0.1 text-sm font-medium text-black-800 ring-1  ring-inset transition hover:bg-orange-100"
         >
           Our Course's
         </Link>
         <BsFillChatLeftTextFill
-          className="text-panel-header-icon cursor-pointer text-xl"
+          className="text-panel-header-icon cursor-pointer text-xl size-12 md:size-12"
           title="New Chat"
           onClick={handleAllContactsPage}
         />
         <>
           <BsThreeDotsVertical
-            className="text-panel-header-icon cursor-pointer text-xl"
+            className="text-panel-header-icon cursor-pointer text-xl size-12 md:size-12"
             title="Menu"
             onClick={(e) => showContextMenu(e)}
             id="context-opener"

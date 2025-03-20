@@ -57,7 +57,15 @@ function onboarding() {
   };
 
   const validateDetails = () => {
-    if (name.length < 3 && mobileNumber.length < 10) {
+    const mobileRegex = /^\d{10}$/; // Ensures exactly 10 digits
+    if (name.length < 3) {
+      alert("Name must be at least 3 characters long.");
+      return false;
+    }
+    if (!mobileRegex.test(mobileNumber)) {
+      alert(
+        "Mobile number must be exactly 10 digits and contain only numbers."
+      );
       return false;
     }
     return true;
@@ -78,7 +86,11 @@ function onboarding() {
           <Input
             name="Mobile Number"
             state={mobileNumber}
-            setState={setMobileNumber}
+            setState={(value) => {
+              if (/^\d*$/.test(value) && value.length <= 10) {
+                setMobileNumber(value);
+              }
+            }}
             label
           />
           <div className="flex items-center justify-center">
