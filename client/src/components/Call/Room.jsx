@@ -36,11 +36,11 @@ const Room = ({ data }) => {
   const myMeet = async (element) => {
     if (!element || zcRef.current) return; // Avoid reinitialization
 
-    const appId = 370893850;
-    const sersec = "2064a6f292e4e81b1678031feb99fb84";
+    const appId = process.env.NEXT_PUBLIC_ZEGO_APP_ID;
+    const serSecret = process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET;
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
       appId,
-      sersec,
+      serSecret,
       data?.roomId?.toString(),
       userInfo.id.toString(),
       userInfo.name
