@@ -71,9 +71,8 @@ const Room = ({ data }) => {
         }
       },
       turnOnCameraWhenJoining: false,
-      turnOnMicrophoneWhenJoining: true,
+      // turnOnMicrophoneWhenJoining: true, //By default enabled
       showMyCameraToggleButton: false,
-      showScreenSharingButton: false,
     });
 
     console.log("zc", zc);
