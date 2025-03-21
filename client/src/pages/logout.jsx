@@ -11,6 +11,8 @@ function logout() {
   useEffect(() => {
     socket.current.emit("signout", userInfo.id);
     dispatch({ type: reducerCases.SET_USER_INFO, userInfo: undefined });
+    console.log("Shubham is here");
+    localStorage.removeItem("userInfo");
     signOut(firebaseAuth);
     router.push("/login");
   }, [dispatch]);

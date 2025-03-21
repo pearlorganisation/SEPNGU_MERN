@@ -132,6 +132,7 @@ function Main() {
       });
 
       socket.current.on("voice-call-rejected", () => {
+        console.log("caller voice call rejection");
         dispatch({
           type: reducerCases.END_CALL,
         });
@@ -188,6 +189,19 @@ function Main() {
 
       setSocketEvent(true);
     }
+
+    // return () => {
+    //   socket.current.off("msg-recieve");
+    //   socket.current.off("incoming-voice-call");
+    //   socket.current.off("incoming-video-call");
+    //   socket.current.off("newNotification");
+    //   socket.current.off("user-busy");
+    //   socket.current.off("outgoing-voice-call");
+    //   socket.current.off("video-call-rejected");
+    //   socket.current.off("voice-call-rejected");
+
+    //   // Remove specific event listener
+    // };
   }, [socket.current]);
 
   useEffect(() => {
@@ -208,30 +222,28 @@ function Main() {
     <>
       {incomingVideoCall && <IncomingVideoCall />}
       {incomingVoiceCall && <IncomingCall />}
-      {/* {videoCall && (
-        <div className="h-screen w-screen max-h-full overflow-hidden">
-          <VideoCall />
-        </div>
-      )}
-      {voiceCall && (
-        <div className="h-screen w-screen max-h-full overflow-hidden">
-          <VoiceCall />
-        </div>
-      )} */}
+
       {!videoCall && !voiceCall && (
-        <div className="grid sm:grid-cols-[50%_50%] lg:grid-cols-main h-screen w-screen max-h-screen max-w-full">
-          <ChatList className="hidden sm:block sm:order-2" />
+        <div
+          // className="grid sm:grid-cols-[50%_50%] md:grid-cols-main lg:grid-cols-main h-screen w-screen max-h-screen max-w-full"
+          className="grid grid-cols-1 md:grid-cols-[40%_auto] lg:grid-cols-[30%_auto]"
+        >
+          <ChatList />
           {currentChatUser ? (
             <div
-              className={`flex flex-col w-full h-full ${
-                messagesSearch ? "sm:grid sm:grid-cols-[35%_65%]" : ""
+              className={`hidden md:block flex-col w-full h-full ${
+                messagesSearch ? "" : ""
               }`}
+
+              // className={`flex flex-col w-full h-full ${
+              //   messagesSearch ? "sm:grid sm:grid-cols-[35%_65%]" : ""
+              // }`}
             >
               <Chat />
               {messagesSearch && <SearchMessage />}
             </div>
           ) : (
-            <Empty className="flex items-center justify-center w-full" />
+            <Empty />
           )}
         </div>
       )}
@@ -240,3 +252,5 @@ function Main() {
 }
 
 export default Main;
+
+//          div       grid sm:grid-cols-[50%_50%] md:grid-cols-main lg:grid-cols-main h-screen w-screen max-h-screen max-w-full

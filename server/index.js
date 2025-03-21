@@ -129,10 +129,11 @@ io.on("connection", (socket) => {
           console.log("activeCalls in timeouts", activeCalls);
 
           // const user1 = global.onlineUsers.get(data.from.id);
+          const user1 = global.onlineUsers.get(data.from);
           const user2 = global.onlineUsers.get(data.to);
           if (user2) {
             console.log("user2", user2);
-            socket.to(user2).emit("outgoing-voice-call", {
+            socket.to([user1, user2]).emit("outgoing-voice-call", {
               call: "autoRejected",
             });
           }

@@ -33,6 +33,7 @@ function IncomingCall() {
       from: incomingVoiceCall.id,
       to: userInfo.id,
     }); // reject call of caller id
+
     dispatch({ type: reducerCases.END_CALL });
   };
   return (

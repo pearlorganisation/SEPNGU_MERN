@@ -1,75 +1,80 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { useStateProvider } from "@/context/StateContext";
 import { useRouter } from "next/navigation";
 
 const Room = ({ data }) => {
-  const [{ userInfo, socket }, dispatch] = useStateProvider();
-  const [zegoState, setZegoState] = useState(null);
-  // const history = useHistory();
+  const [{ userInfo, socket }] = useStateProvider();
   const router = useRouter();
+  const zcRef = useRef(null); // Store `zc` reference here
 
-  console.log("data in room: ", data);
-  console.log("user info in room: ", userInfo);
-  const stopMicrophone = () => {
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then((stream) => {
-        stream.getTracks().forEach((track) => track.stop()); // Stop mic
-      })
-      .catch((error) => console.log("Error stopping microphone: ", error));
-  };
+  useEffect(() => {
+    if (!socket.current) return;
+
+    const handleOutgoingCall = (data) => {
+      console.log("from outgoing voice call");
+      if (data?.call === "autoRejected") {
+        console.log("We came in outgoing-voice-call reducer in room section");
+        if (zcRef.current) {
+          zcRef.current.destroy(); // Destroy the Zego instance
+        }
+        router.replace("/");
+      }
+    };
+
+    socket.current.on("outgoing-voice-call", handleOutgoingCall);
+
+    return () => {
+      socket.current.off("outgoing-voice-call", handleOutgoingCall);
+      if (zcRef.current) {
+        zcRef.current.destroy(); // Ensure cleanup on unmount
+      }
+    };
+  }, [socket, router]);
+
   const myMeet = async (element) => {
-    const appId = 370893850;
-    const sersec = "2064a6f292e4e81b1678031feb99fb84";
+    if (!element || zcRef.current) return; // Avoid reinitialization
+
+    const appId = parseInt(process.env.NEXT_PUBLIC_ZEGO_APP_ID);
+    const serSecret = process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET;
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
       appId,
-      sersec,
-      data?.roomId?.toString(), // room id
-      userInfo.id.toString(), // userid
-      userInfo.name // user name
+      serSecret,
+      data?.roomId?.toString(),
+      userInfo.id.toString(),
+      userInfo.name
     );
 
     const zc = ZegoUIKitPrebuilt.create(kitToken);
-    setZegoState(zc);
-    // zc.on("roomEnd", () => {
-    //   history.push("/");
-    // });
+    zcRef.current = zc; // Store the instance
 
-    if (!zc.hasJoinedRoom) {
-      zc.joinRoom({
-        container: element,
-        scenario: { mode: ZegoUIKitPrebuilt.OneONoneCall },
-        onJoinRoom: (user) => {
-          console.log("Someone Joined");
-        },
-        onLeaveRoom: () => {
-          console.log("Users onLeaveRoom !!");
-          zc.hangUp();
-          window.location.replace("/");
-          stopMicrophone(); // Stop microphone
-        },
-        onUserLeave: (users) => {
-          console.log("Users onUserLeave !!", users);
-          socket.current.emit("hangup-user-call", users?.[0]);
-          zc.hangUp();
-          window.location.replace("/");
-          stopMicrophone();
-        },
+    zc.joinRoom({
+      container: element,
+      scenario: { mode: ZegoUIKitPrebuilt.OneONoneCall },
+      onJoinRoom: () => console.log("Someone Joined"),
+      onLeaveRoom: () => {
+        console.log("Users onLeaveRoom !!");
+        zc.hangUp();
+        router.replace("/");
+      },
+      onUserLeave: (users) => {
+        console.log("Users onUserLeave !!", users);
+        socket.current.emit("hangup-user-call", users?.[0]);
+        zc.hangUp();
+        router.replace("/");
+      },
+      onCallInvitationEnded: () => {
+        if (zcRef.current) {
+          zcRef.current.destroy();
+          zcRef.current = null;
+        }
+      },
+      turnOnCameraWhenJoining: false,
+      // turnOnMicrophoneWhenJoining: true, //By default enabled
+      showMyCameraToggleButton: false,
+    });
 
-        onSetRoomConfigBeforeJoining: (callType) => ({
-          turnOnMicrophoneWhenJoining: false,
-        }),
-        // Disable Video & Enable Audio Only
-        turnOnCameraWhenJoining: false, // Disable Camera
-        // turnOnMicrophoneWhenJoining: true, // Enable Microphone
-        showCameraToggleButton: false, // Hide camera toggle button
-      });
-      console.log(`User [ ${userInfo.name} ] has joined the room`);
-    } else {
-      console.log("Already in the room, no need to join again");
-    }
     console.log("zc", zc);
     console.log("zegoState", zegoState);
   };

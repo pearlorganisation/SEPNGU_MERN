@@ -200,6 +200,8 @@ function landingpage() {
   const [userData, setUserData] = useState(null);
   const router = useRouter();
 
+  // const isUserLoggedIn = false;
+
   console.log(userInfo, "userInfo on landing page");
 
   useEffect(() => {
@@ -302,6 +304,8 @@ function landingpage() {
     }
   };
 
+  console.log(userData, "1223423");
+
   return (
     <div className="relative isolate overflow-hidden bg-gradient-to-r from-emerald-800 to-red-800 py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-1 lg:px-8">
@@ -339,6 +343,16 @@ function landingpage() {
             ))}
           </dl>
         </div>
+
+        {!userData && (
+          <button
+            className="px-4 py-2 bg-blue-500 "
+            onClick={() => router.push("/login")}
+          >
+            {" "}
+            Log In{" "}
+          </button>
+        )}
 
         {Array.isArray(plans) &&
           plans.length > 0 &&
