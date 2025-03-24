@@ -32,6 +32,8 @@ const Room = ({ data }) => {
       }
     };
   }, [socket, router]);
+  console.log("App ID:", process.env.NEXT_PUBLIC_ZEGO_APP_ID);
+  console.log("Server Secret:", process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET);
 
   const myMeet = async (element) => {
     if (!element || zcRef.current) return; // Avoid reinitialization
@@ -56,13 +58,13 @@ const Room = ({ data }) => {
       onLeaveRoom: () => {
         console.log("Users onLeaveRoom !!");
         zc.hangUp();
-        router.replace("/");
+        window.location.replace("/");
       },
       onUserLeave: (users) => {
         console.log("Users onUserLeave !!", users);
         socket.current.emit("hangup-user-call", users?.[0]);
         zc.hangUp();
-        router.replace("/");
+        window.location.replace("/");
       },
       onCallInvitationEnded: () => {
         if (zcRef.current) {
