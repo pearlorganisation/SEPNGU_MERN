@@ -73,7 +73,7 @@ const Room = ({ data }) => {
         }
       },
       turnOnCameraWhenJoining: false,
-      // turnOnMicrophoneWhenJoining: true, //By default enabled
+      turnOnMicrophoneWhenJoining: false, //By default enabled
       showMyCameraToggleButton: false,
     });
 
