@@ -78,7 +78,6 @@ const Room = ({ data }) => {
     });
 
     console.log("zc", zc);
-    console.log("zegoState", zegoState);
   };
 
   return <div ref={myMeet}></div>;
