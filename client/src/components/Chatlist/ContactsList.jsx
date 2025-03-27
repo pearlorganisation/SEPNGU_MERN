@@ -104,6 +104,8 @@ function ContactsList() {
   const [allContacts, setAllContacts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchContacts, setSearchContacts] = useState([]);
+  const [msgChatMob, setMsgChatMob] = useState(false);
+
   const [{}, dispatch] = useStateProvider();
 
   useEffect(() => {
@@ -164,7 +166,7 @@ function ContactsList() {
             />
           </div>
         </div>
-
+       gfjf
         {/* Contact List */}
         {Object.entries(searchContacts).map(
           ([initialLetter, userList]) =>
@@ -184,6 +186,8 @@ function ContactsList() {
             )
         )}
       </div>
+
+
     </div>
   );
 }

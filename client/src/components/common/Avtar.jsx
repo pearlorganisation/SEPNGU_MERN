@@ -5,7 +5,6 @@ import ContextMenu from './ContextMenu';
 import PhotoPicker from './PhotoPicker';
 import PhotoLibrary from './PhotoLibrary';
 import CapturePhoto from './CapturePhoto';
-
 function Avtar({type, image, setImage}) {
     const [hover, setHover] = useState(false);
     const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
@@ -50,7 +49,7 @@ function Avtar({type, image, setImage}) {
         {
             name:"Remove Photo",
             callback:()=>{
-            setImage("./default-avatar.png");
+            setImage("/avatars/1.png");
         }},
     ];
 
@@ -72,14 +71,14 @@ function Avtar({type, image, setImage}) {
   return (
     <>
     <div className='flex items-center justify-center'>
-    {type==="sm" && (
+    {type==="sm" && image &&(
     <div className='relative h-10 w-10'>
-        <Image src={image} alt='spoken english guru avatar' className='rounded-full' fill/>
+        <Image height={40} width={40} src={image||'/avatars/a.png'} alt='spoken english guru avatar' className='rounded-full' />
     </div>
     )}
-    {type==="lg" && (
+    {type==="lg" && image &&(
     <div className='relative h-14 w-14'>
-        <Image src={image} alt='spoken english guru avatar' className='rounded-full' fill/>
+        <img src={image||'/avatars/a.png'} alt='spoken english guru avatar' className='rounded-full' width={400} height={400}/>
     </div>
     )}
     {type==="xl" && (
@@ -97,7 +96,7 @@ function Avtar({type, image, setImage}) {
         <span onClick = {(e)=>showContextMenu(e)} id='context-opener' className='h-18 w-18'>Change <br></br>Profile<br></br> Photo</span>
     </div>
     <div className='flex items-center justify-center h-40 w-40'>
-        <Image src={image} alt='spoken english guru avatar' className='rounded-full' fill/>
+        {/* <Image src={image||''} alt='spoken english guru avatar' className='rounded-full' fill/> */}
     </div>
     </div>
     )}

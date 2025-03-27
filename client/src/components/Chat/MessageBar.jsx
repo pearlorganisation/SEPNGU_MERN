@@ -6,13 +6,13 @@ import EmojiPicker from "emoji-picker-react";
 import React, { useEffect, useRef, useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import { FaMicrophone } from "react-icons/fa";
-import { ImAttachment } from "react-icons/im";
 import { MdSend } from "react-icons/md";
 import PhotoPicker from "../common/PhotoPicker";
 import dynamic from "next/dynamic";
 const CaptureAudio = dynamic(() => import("../common/CaptureAudio"), {
   ssr: false,
 });
+
 function MessageBar() {
   const [{ userInfo, currentChatUser, socket }, dispatch] = useStateProvider();
   const [message, setMessage] = useState("");
@@ -117,10 +117,12 @@ function MessageBar() {
   }, [grabPhoto]);
 
   return (
-    <div className="bg-panel-header-background h-20 px-4 flex items-center gap-6 relative">
+    // <div className="bg-panel-header-background h-20 px-4 flex items-center gap-6 fixed bottom-0 left-0 right-0 w-full z-50">
+    <div className="bg-panel-header-background h-20 px-4 flex items-center gap-6 fixed bottom-0 left-0 right-0 w-full z-50">
+      {/* Message Bar content */}
       {!showAudioRecorder && (
         <>
-          <div className="flex gap-6 ">
+          <div className="flex gap-6">
             <BsEmojiSmile
               className="text-panel-header-icon cursor-pointer text-xl"
               title="Emoji"
@@ -135,9 +137,6 @@ function MessageBar() {
                 <EmojiPicker onEmojiClick={handleEmojiClick} theme="dark" />
               </div>
             )}
-            {/* <ImAttachment className='text-panel-header-icon cursor-pointer text-xl' title='Attach file'
-            onClick={()=>setGrabPhoto(true)}
-            /> */}
           </div>
           <div className="w-full rounded-lg h-10 flex items-center">
             <input
@@ -174,3 +173,4 @@ function MessageBar() {
 }
 
 export default MessageBar;
+

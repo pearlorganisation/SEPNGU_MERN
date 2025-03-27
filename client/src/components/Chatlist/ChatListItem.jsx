@@ -129,9 +129,9 @@ function ChatListItem({ data, isContactsPage = false }) {
     >
       {/* Avatar */}
       <div className="min-w-fit px-3 sm:px-2">
-        <Avtar type="lg" image={data?.profilePicture} />
+       {data?.profilePicture &&  <Avtar type="lg" image={data?.profilePicture} />}
       </div>
-
+   sfdsfds
       {/* Chat Details */}
       <div className="flex flex-col justify-center w-full">
         {/* Name & Time */}
@@ -148,6 +148,7 @@ function ChatListItem({ data, isContactsPage = false }) {
               {calculateTime(data.createdAt)}
             </span>
           )}
+          
         </div>
 
         {/* Message Preview */}
@@ -174,6 +175,7 @@ function ChatListItem({ data, isContactsPage = false }) {
                       <FaCamera className="text-panel-header-icon" /> Image
                     </span>
                   )}
+                  
                 </div>
               )}
             </span>
