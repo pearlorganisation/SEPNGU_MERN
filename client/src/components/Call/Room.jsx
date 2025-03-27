@@ -9,23 +9,19 @@ const Room = ({ data }) => {
   const router = useRouter();
   const zcRef = useRef(null); // Store `zc` reference here
 
+  // 🔹 Stop local mic playback when the component mounts
   useEffect(() => {
-    let audioContext = new AudioContext();
-    let dummyStream = audioContext.createMediaStreamDestination();
-
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
-        let audioSource = audioContext.createMediaStreamSource(stream);
-        audioSource.connect(dummyStream);
-        stream.getTracks().forEach((track) => track.stop());
-        console.log("Audio source disconnected to prevent playback");
+        stream.getAudioTracks().forEach((track) => (track.enabled = false)); // 🔇 Mute mic immediately
+        console.log("Microphone access granted but muted.");
+        setTimeout(
+          () => stream.getTracks().forEach((track) => track.stop()),
+          500
+        ); // Stop stream after 500ms
       })
-      .catch((err) => console.error("Error handling audio context:", err));
-
-    return () => {
-      audioContext.close();
-    };
+      .catch((err) => console.error("Error stopping mic playback:", err));
   }, []);
 
   useEffect(() => {
