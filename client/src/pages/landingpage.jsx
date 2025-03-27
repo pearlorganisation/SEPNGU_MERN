@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaFacebook,
   FaGlobe,
@@ -7,20 +7,19 @@ import {
   FaWhatsapp,
   FaYoutube,
 } from "react-icons/fa";
-import phone from "../../public/avatars/pendrive.jpg";
+import phone from "../../public/avatars/1.png";
 import Image from "next/image";
-import axios from "axios";
-import { GET_ALL_PLANS } from "@/utils/ApiRoutes";
-import { useStateProvider } from "@/context/StateContext";
-import { reducer } from "@/context/StateReducers";
 import { useRouter } from "next/router";
+import { useStateProvider } from "@/context/StateContext";
+import axios from "axios";
 import { toast } from "react-toastify";
+import { GET_ALL_PLANS } from "@/utils/ApiRoutes";
 
 const products = [
   {
     id: 1,
     name: "Online Chatting",
-    href: "",
+    href: "/onboarding",
     price: "",
     imageSrc: "/avatars/chat.jpg",
     imageAlt: "",
@@ -28,7 +27,7 @@ const products = [
   {
     id: 2,
     name: "Online One on One Calling",
-    href: "",
+    href: "/onboarding",
     price: "",
     imageSrc: "/avatars/calling.avif",
     imageAlt: "",
@@ -36,7 +35,7 @@ const products = [
   {
     id: 3,
     name: "English Speaking & Novel Books PDF",
-    href: "",
+    href: "/novelpdf",
     price: "",
     imageSrc: "/avatars/novel.jpg",
     imageAlt: "",
@@ -44,15 +43,15 @@ const products = [
   {
     id: 4,
     name: "English News for up to date",
-    href: "",
+    href: "https://www.firstpost.com/shorts/",
     price: "",
     imageSrc: "/avatars/news.jpg",
     imageAlt: "",
   },
   {
     id: 5,
-    name: "Overall English Learning Games",
-    href: "",
+    name: "English Learning Games",
+    href: "/englishquizz",
     price: "",
     imageSrc: "/avatars/games.jpg",
     imageAlt: "",
@@ -68,7 +67,7 @@ const products = [
   {
     id: 6,
     name: "Interview Practice Excersie Notes",
-    href: "",
+    href: "/interview",
     price: "",
     imageSrc: "/avatars/interview.jpg",
     imageAlt: "",
@@ -76,17 +75,19 @@ const products = [
   {
     id: 7,
     name: "English Learning For Kids",
-    href: "",
+    href: "/englishkids",
     price: "",
     imageSrc: "/avatars/kids1.jpg",
     imageAlt: "",
   },
-];
-const links = [
-  { name: "Our Website", href: "#" },
-  { name: "YouTube", href: "#" },
-  { name: "Instagram", href: "#" },
-  { name: "Facebook", href: "#" },
+  {
+    id: 8,
+    name: "1000+ Daily Use Sentences",
+    href: "/dailyusesentences",
+    price: "",
+    imageSrc: "/avatars/daily use sentences.jpg",
+    imageAlt: "",
+  },
 ];
 const stats = [
   { name: "Active Member", value: "1000+" },
@@ -193,29 +194,45 @@ const posts = [
     },
   },
 ];
+const links = [
+  { name: "Our Website", href: "#" },
+  { name: "YouTube", href: "#" },
+  { name: "Instagram", href: "#" },
+  { name: "Facebook", href: "#" },
+];
 
-function landingpage() {
+function LandingPage() {
   const [{ userInfo }, dispatch] = useStateProvider();
 
   const [userData, setUserData] = useState(null);
   const router = useRouter();
 
+  const user =
+    typeof window !== "undefined" ? localStorage.getItem("user") : null;
+
+  // useEffect(() => {
+  //   if (!user) {
+  //     // Redirect to login if no user found
+  //     router.push("/login");
+  //   }
+  // }, [user, router]);
+
   // const isUserLoggedIn = false;
 
   console.log(userInfo, "userInfo on landing page");
 
-  useEffect(() => {
-    const checkData = localStorage.getItem("userInfo");
+  // useEffect(() => {
+  //   const checkData = localStorage.getItem("userInfo");
 
-    if (!checkData) {
-      router.push("/login");
-    } else {
-      const data = JSON.parse(checkData);
-      console.log(data);
-      setUserData(data);
-      console.log(data);
-    }
-  }, []);
+  //   if (checkData == null) {
+  //     router.push("/login");
+  //   } else {
+  //     const data = JSON.parse(checkData);
+  //     console.log(data);
+  //     setUserData(data);
+  //     console.log(data);
+  //   }
+  // }, []);
 
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -240,7 +257,10 @@ function landingpage() {
   const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
   // console.log("key---- ", razorpayKey);
   const handleSubscription = async ({ planId }) => {
-    console.log(userData);
+    if (!userInfo) {
+      router.push("/login");
+      return;
+    }
 
     try {
       // Step 1: Create Subscription via API
@@ -248,8 +268,8 @@ function landingpage() {
         "http://localhost:3005/api/subscriptions",
         {
           planId,
-          email: userData?.email,
-          userId: userData?.id,
+          email: userInfo?.email,
+          userId: userInfo?.id,
         }
       );
 
@@ -274,15 +294,15 @@ function landingpage() {
             });
 
             setTimeout(() => {
-              router.push("/");
+              router.push("/onboarding");
             }, 2000);
           } catch (error) {
-            setError("Payment verification failed");
+            console.log(error, "Error 123456");
           }
         },
         prefill: {
-          name: userData?.name,
-          email: userData?.email,
+          name: userInfo?.name,
+          email: userInfo?.email,
 
           // contact: "9999999999",
         },
@@ -333,8 +353,8 @@ function landingpage() {
         </div>
         <div className="mx-auto mt-0 max-w-2xl lg:mx-0 lg:max-w-none">
           <dl className="mt-1 grid grid-cols-1 gap-8 sm:mt-5 sm:grid-cols-2 lg:grid-cols-4">
-            {stats.map((stat, index) => (
-              <div key={index} className="flex flex-col-reverse gap-1">
+            {stats.map((stat) => (
+              <div key={stat.name} className="flex flex-col-reverse gap-1">
                 <dt className="text-md font-bold text-gray-300">{stat.name}</dt>
                 <dd className="text-4xl font-semibold tracking-tight text-white">
                   {stat.value}
@@ -343,87 +363,18 @@ function landingpage() {
             ))}
           </dl>
         </div>
-
-        {!userData && (
+        <div className="flex justify-center mt-3">
           <button
-            className="px-4 py-2 bg-blue-500 "
-            onClick={() => router.push("/login")}
+            onClick={() =>
+              handleSubscription({
+                planId: plans[0]?.planId,
+              })
+            }
+            class="text-2xl rounded-md border border-transparent bg-indigo-600 px-7 py-2 font-medium text-white hover:bg-indigo-700 animate-popup"
           >
-            {" "}
-            Log In{" "}
-          </button>
-        )}
-
-        {Array.isArray(plans) &&
-          plans.length > 0 &&
-          plans.map((plan) => (
-            // <div
-            //   key={plan._id}
-            //   className="max-w-sm mx-auto p-6 bg-white rounded-2xl shadow-lg border border-gray-200 text-center"
-            // >
-            //   <h2 className="text-xl font-semibold text-gray-800">
-            //     Subscription Plan
-            //   </h2>
-            //   <p className="text-3xl font-bold text-blue-600 mt-2">
-            //     {plan?.currency} {plan?.basePrice}
-            //   </p>
-            //   <p className="text-gray-600 mt-1">
-            //     for {Math.ceil(plan?.duration / 30)} months{" "}
-            //   </p>
-            //   <button
-            //     onClick={() =>
-            //       handleSubscription({
-            //         planId: plan.planId,
-            //       })
-            //     }
-            //     className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-            //   >
-            //     Join Now
-            //   </button>
-            // </div>
-
-            <div
-              key={plan._id}
-              className="max-w-sm mx-auto p-6 bg-white rounded-2xl shadow-lg border border-gray-200 text-center"
-            >
-              <h2 className="text-xl font-semibold text-gray-800">
-                Subscription Plan
-              </h2>
-
-              <p className="text-3xl font-bold text-blue-600 mt-2">
-                {plan?.currency} {plan?.basePrice}
-              </p>
-
-              <p className="text-gray-600 mt-1">
-                for {Math.ceil(plan?.duration / 30)} months
-              </p>
-
-              <p className="text-lg font-medium text-gray-800 mt-2">
-                Final Price:{" "}
-                <span className="text-green-600 font-bold">
-                  {plan?.currency} {(plan?.basePrice * 1.18).toFixed(2)}
-                </span>
-              </p>
-
-              <p className="text-sm text-gray-500">(Includes 18% GST)</p>
-
-              <button
-                onClick={() =>
-                  handleSubscription({
-                    planId: plan.planId,
-                  })
-                }
-                className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-              >
-                Join Now
-              </button>
-            </div>
-          ))}
-        {/* <div className="flex justify-center mt-3">
-          <button className="text-2xl rounded-md border border-transparent bg-indigo-600 px-7 py-2 font-medium text-white hover:bg-indigo-700 animate-popup">
             Join Now
           </button>
-        </div> */}
+        </div>
       </div>
       <br></br>
       <div className="from-emerald-800 to-red-800  w-full min-h-screen text-white">
@@ -442,11 +393,11 @@ function landingpage() {
                 <img
                   alt={product.imageAlt}
                   src={product.imageSrc}
-                  width={300}
+                  width={100}
                   className="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8"
                 />
 
-                <h3 className="mt-2 text-md font-semibold text-white-700">
+                <h3 className="mt-1 text-md font-semibold text-white-700">
                   {product.name}
                 </h3>
                 <p className="mt-1 text-md font-bold text-white-900">
@@ -561,10 +512,8 @@ function landingpage() {
             href="https://wa.me/9760375308"
             className="rounded-md bg-green-600 px-3.5 py-2.5 text-1xl font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Contact support +91 9760375308
-            <span aria-hidden="true">
-              <FaWhatsapp />
-            </span>
+            Contact Support +91 9760375308
+            <FaWhatsapp />
           </a>
         </div>
 
@@ -684,8 +633,11 @@ function landingpage() {
           </a>
         </div>
       </div>
+      <span className="text-white text-xs text-center items-center">
+        @2025 All things are Reserved.
+      </span>
     </div>
   );
 }
 
-export default landingpage;
+export default LandingPage;

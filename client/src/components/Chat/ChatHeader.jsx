@@ -74,12 +74,12 @@ function ChatHeader() {
         </div>
       </div>
       <div className="flex gap-6">
-        <Link
+        {/* <Link
           href="/englishnews"
           className="w-full max-w-[400px] hidden md:block max-h-[200px] sm:w-[200px] md:w-[200px] lg:w-[250px] items-center rounded-md bg-orange-50 mt-1 px-3 py-0.1 text-sm font-medium text-black-800 ring-1 ring-green-600/20 ring-inset transition hover:bg-orange-100"
         >
           English News & Games For Learner
-        </Link>
+        </Link> */}
         <MdCall
           className="text-panel-header-icon cursor-pointer text-2xl"
           onClick={() => {

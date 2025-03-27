@@ -1,22 +1,23 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import ChatList from "./Chatlist/ChatList";
+// import ChatList from "./Chatlist/ChatList";
 import { onAuthStateChanged } from "firebase/auth";
 import { firebaseAuth } from "@/utils/FirebaseConfig";
 import axios from "axios";
 import { CHECK_USER_ROUTE, GET_MESSAGES_ROUTE } from "@/utils/ApiRoutes";
 import { useStateProvider } from "@/context/StateContext";
 import { reducerCases } from "@/context/constans";
-import Chat from "./Chat/Chat";
-import Empty from "./Empty";
+// import Chat from "./Chat/Chat";
+// import Empty from "./Empty";
 import { io } from "socket.io-client";
 import { HOST } from "@/utils/ApiRoutes";
-import SearchMessage from "./Chat/SearchMessage";
-import VideoCall from "./Call/VideoCall";
-import VoiceCall from "./Call/VoiceCall";
-import IncomingVideoCall from "./common/IncomingVideoCall";
-import IncomingCall from "./common/IncomingCall";
+// import SearchMessage from "./Chat/SearchMessage";
+
+// import VideoCall from "./Call/VideoCall";
+// import VoiceCall from "./Call/VoiceCall";
+// import IncomingVideoCall from "./common/IncomingVideoCall";
+// import IncomingCall from "./common/IncomingCall";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 function Main() {
@@ -40,6 +41,7 @@ function Main() {
   const [socketEvent, setSocketEvent] = useState(false);
   const socket = useRef();
   const roter = useRouter();
+
   // const [notifications, setNotifications] = useState([]);
 
   // if (!isUserLoggedIn) {
