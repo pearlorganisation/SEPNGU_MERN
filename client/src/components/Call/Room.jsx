@@ -10,6 +10,25 @@ const Room = ({ data }) => {
   const zcRef = useRef(null); // Store `zc` reference here
 
   useEffect(() => {
+    let audioContext = new AudioContext();
+    let dummyStream = audioContext.createMediaStreamDestination();
+
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then((stream) => {
+        let audioSource = audioContext.createMediaStreamSource(stream);
+        audioSource.connect(dummyStream);
+        stream.getTracks().forEach((track) => track.stop());
+        console.log("Audio source disconnected to prevent playback");
+      })
+      .catch((err) => console.error("Error handling audio context:", err));
+
+    return () => {
+      audioContext.close();
+    };
+  }, []);
+
+  useEffect(() => {
     if (!socket.current) return;
 
     const handleOutgoingCall = (data) => {
@@ -50,25 +69,6 @@ const Room = ({ data }) => {
 
     const zc = ZegoUIKitPrebuilt.create(kitToken);
     zcRef.current = zc; // Store the instance
-
-    useEffect(() => {
-      let audioContext = new AudioContext();
-      let dummyStream = audioContext.createMediaStreamDestination();
-
-      navigator.mediaDevices
-        .getUserMedia({ audio: true })
-        .then((stream) => {
-          let audioSource = audioContext.createMediaStreamSource(stream);
-          audioSource.connect(dummyStream);
-          stream.getTracks().forEach((track) => track.stop());
-          console.log("Audio source disconnected to prevent playback");
-        })
-        .catch((err) => console.error("Error handling audio context:", err));
-
-      return () => {
-        audioContext.close();
-      };
-    }, []);
 
     zc.joinRoom({
       container: element,
