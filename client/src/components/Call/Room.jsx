@@ -84,7 +84,7 @@ const Room = ({ data }) => {
 
       // 🚫 Hide UI Buttons
       showMyCameraToggleButton: false, // Hide camera toggle button
-      showMyMicrophoneToggleButton: false, // Hide microphone toggle button
+      showMyMicrophoneToggleButton: true, // Hide microphone toggle button
     });
 
     console.log("zc", zc);
