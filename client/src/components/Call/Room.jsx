@@ -50,13 +50,26 @@ const Room = ({ data }) => {
 
     const zc = ZegoUIKitPrebuilt.create(kitToken);
     zcRef.current = zc; // Store the instance
- // 🔹 Stop local mic playback in the LOBBY (before joining)
-  navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-    stream.getTracks().forEach((track) => track.stop()); 
-    console.log("Microphone playback stopped in lobby");
-  }).catch((err) => {
-    console.error("Error stopping local mic in lobby:", err);
-  });
+
+    useEffect(() => {
+      let audioContext = new AudioContext();
+      let dummyStream = audioContext.createMediaStreamDestination();
+
+      navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then((stream) => {
+          let audioSource = audioContext.createMediaStreamSource(stream);
+          audioSource.connect(dummyStream);
+          stream.getTracks().forEach((track) => track.stop());
+          console.log("Audio source disconnected to prevent playback");
+        })
+        .catch((err) => console.error("Error handling audio context:", err));
+
+      return () => {
+        audioContext.close();
+      };
+    }, []);
+
     zc.joinRoom({
       container: element,
       scenario: { mode: ZegoUIKitPrebuilt.OneONoneCall },
