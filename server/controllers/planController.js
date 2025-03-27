@@ -6,7 +6,7 @@ export const createPlan = async (req, res) => {
     const {
       name,
       basePrice,
-      currency,
+      currency = "INR",
       period = "monthly",
       interval = 3,
     } = req.body;
