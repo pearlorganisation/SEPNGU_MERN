@@ -43,6 +43,7 @@ app.use("/api/subscriptions", subcriptionRouter);
 app.use("/api/verify-payment", verifyPaymentRouter);
 app.use("/api/notifications", notificationRouter);
 
+
 const server = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

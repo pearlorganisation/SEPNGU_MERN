@@ -1,14 +1,15 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { useStateProvider } from "@/context/StateContext";
 import { useRouter } from "next/navigation";
 
 const Room = ({ data }) => {
   const [{ userInfo, socket }] = useStateProvider();
+  // const [showMicButton, setShowMicButton] = useState(false); // Manage mic button state
   const router = useRouter();
   const zcRef = useRef(null); // Store `zc` reference here
-
+  // console.log("showMicButton before join room: ", showMicButton);
   useEffect(() => {
     if (!socket.current) return;
 
@@ -54,7 +55,12 @@ const Room = ({ data }) => {
     zc.joinRoom({
       container: element,
       scenario: { mode: ZegoUIKitPrebuilt.OneONoneCall },
-      onJoinRoom: () => console.log("Someone Joined"),
+      onJoinRoom: () => {
+        console.log("Someone Joined");
+        // 👇 Show microphone toggle when user joins
+        // setShowMicButton(true); // Enable mic button when user joins
+        // console.log("showMicButton after join room: ", showMicButton);
+      },
       onLeaveRoom: () => {
         console.log("Users onLeaveRoom !!");
         zc.hangUp();

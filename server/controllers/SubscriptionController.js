@@ -35,3 +35,26 @@ export const createSubscription = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const getUserSubscriptions = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const prisma = getPrismaInstance();
+    const subscriptions = await prisma.subscription.findMany({
+      where: {
+        userId: parseInt(id),
+      },
+      include: {
+        plan: true,
+      },
+    });
+    res.status(200).json({
+      success: true,
+      message: "Subscriptions fetched successfully",
+      data: subscriptions,
+    });
+  } catch (error) {
+    console.error("Error fetching subscriptions:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
