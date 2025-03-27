@@ -6,13 +6,13 @@ export const createPlan = async (req, res) => {
     const {
       name,
       basePrice,
-      currency,
+      currency = "INR",
       period = "monthly",
       interval = 3,
     } = req.body;
 
     // Validate required fields
-    if (!name || !basePrice || !currency) {
+    if (!name || !basePrice) {
       return res
         .status(400)
         .json({ success: false, message: "Missing required fields" });
