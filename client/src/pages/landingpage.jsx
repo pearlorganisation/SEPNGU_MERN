@@ -294,7 +294,7 @@ function LandingPage() {
             });
 
             setTimeout(() => {
-              router.push("/onboarding");
+              router.push("/main");
             }, 2000);
           } catch (error) {
             console.log(error, "Error 123456");

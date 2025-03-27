@@ -20,6 +20,12 @@ import { HOST } from "@/utils/ApiRoutes";
 // import IncomingCall from "./common/IncomingCall";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import ChatList from "@/components/Chatlist/ChatList";
+import IncomingCall from "@/components/common/IncomingCall";
+import IncomingVideoCall from "@/components/common/IncomingVideoCall";
+import Chat from "@/components/Chat/Chat";
+import SearchMessage from "@/components/Chat/SearchMessage";
+import Empty from "@/components/Empty";
 function Main() {
   const router = useRouter();
 
