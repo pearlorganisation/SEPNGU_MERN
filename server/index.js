@@ -23,6 +23,7 @@ app.use(
       "http://localhost:3000",
       "http://localhost:5173",
       "https://sepngu-mern.vercel.app",
+      "https://spengu-new.vercel.app"
     ],
   })
 );
