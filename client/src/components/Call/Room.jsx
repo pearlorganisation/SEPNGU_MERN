@@ -78,6 +78,7 @@ const Room = ({ data }) => {
           zcRef.current = null;
         }
       },
+      showPreJoinView: false,
       // 🚫 Disable Mic & Camera
       turnOnCameraWhenJoining: false,
       turnOnMicrophoneWhenJoining: false, //By default enabled
