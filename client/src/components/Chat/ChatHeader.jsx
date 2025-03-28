@@ -55,7 +55,7 @@ function ChatHeader() {
   //   dispatch({ type: reducerCases.CHANGE_CURRENT_CHAT_USER, payload: null });
   // };
   const handleBackClick = () => {
-    dispatch({ type: reducerCases.SET_CURRENT_CHAT_USER, payload: null });
+    dispatch({ type: reducerCases.CHANGE_CURRENT_CHAT_USER, payload: null });
   };
 
   return (

@@ -131,7 +131,7 @@ function ChatListItem({ data, isContactsPage = false }) {
       <div className="min-w-fit px-3 sm:px-2">
        {data?.profilePicture &&  <Avtar type="lg" image={data?.profilePicture} />}
       </div>
-   sfdsfds
+   {/* sfdsfds */}
       {/* Chat Details */}
       <div className="flex flex-col justify-center w-full">
         {/* Name & Time */}
