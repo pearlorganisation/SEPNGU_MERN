@@ -54,7 +54,8 @@ const Room = ({ data }) => {
 
     zc.joinRoom({
       container: element,
-      scenario: { mode: ZegoUIKitPrebuilt.OneONoneCall },
+      scenario: { mode: ZegoUIKitPrebuilt.LiveStreaming },
+
       onJoinRoom: () => {
         console.log("Someone Joined");
         // 👇 Show microphone toggle when user joins
